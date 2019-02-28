@@ -1,0 +1,20 @@
+{
+  "name": "connect",
+  "version": "1.0.0",
+  "description": "API for DCEG Cohort Studies",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/episphere/connect.git"
+  },
+  "author": "Jonas Almeida",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/episphere/connect/issues"
+  },
+  "homepage": "https://github.com/episphere/connect#readme"
+}
