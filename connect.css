@@ -1,0 +1,15 @@
+body {
+    font-family:verdana
+}
+
+h2 {
+    color:maroon
+}
+
+p {
+    color:navy
+}
+
+a:hover {
+    background-color: yellow;
+}
