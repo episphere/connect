@@ -1,13 +1,13 @@
 body {
-    font-family:verdana
+    font-family:verdana;
 }
 
 h2,h3 {
-    color:maroon
+    color:maroon;
 }
 
 p {
-    color:navy
+    color:navy;
 }
 
 a:hover {
@@ -16,4 +16,24 @@ a:hover {
 
 li {
     color:green
+}
+
+button {
+    font-size:1em;
+    color:blue;
+}
+
+textarea {
+    height: 50%;
+    width: 500px;
+}
+
+#send {
+    background-color:silver;
+    color:black;
+}
+
+#received {
+    background-color:black;
+    color:lime;
 }
