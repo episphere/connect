@@ -24,16 +24,16 @@ button {
 }
 
 textarea {
-    height: 50%;
+    height: 20%;
     width: 500px;
 }
 
-#send {
+#sendContent {
     background-color:silver;
     color:black;
 }
 
-#received {
+#responded {
     background-color:black;
     color:lime;
 }
