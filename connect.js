@@ -17,8 +17,9 @@ connect.api=(_=>{
 
 connect.UI=function(div){
     let h = '<h3>API status: <span id="apistatus" style="color:red;font-size:small">not connected</span></h3>'
-    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" id="sendGet" checked=true>(commands) | POST<input type="radio" id="sendPost">(data) | Key: <input type="password" id="callKey"></span><br>'
+    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" id="sendGet" checked=true>(commands) | POST<input type="radio" id="sendPost">(data)<br>Key: <input type="password" id="callKey"> | Filename <input id="filename">(data)</span><br>'
     h += '<textarea id="sendContent"></textarea>'
+    h += '<br><input type="file" id="loadFile">'
     h += '<p style="color:green">Responded:</p>'
     h += '<textarea id="responded"></textarea>'
     div.innerHTML=h
@@ -43,11 +44,12 @@ connect.UI=function(div){
         var opts = {
             method:method,
             headers:{
-                key:callKey.value
+                key:callKey.value,
+                filename:filename.value
             }
         }
         if(method=="POST"){
-            opts.body=encodeURIComponent(responded.value)
+            opts.body=encodeURIComponent(txt)
         }
         fetch(connect.api+'?set='+txt,opts).then(resp=>{
             resp.json().then(y=>{

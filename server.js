@@ -1,13 +1,18 @@
 http = require('http')
 fs = require('fs')
-
 port = process.env.PORT || 3000
+env={}
+if(process.env.connectEnv){
+    env=JSON.parse(decodeURIComponent(process.env.connectEnv))
+}
+
+
 
 server = http.createServer(function (req, res) {
     res.writeHead(200, {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin':'*',
-        'Access-Control-Allow-Headers':'key'
+        'Access-Control-Allow-Headers':'key,filename'
     });
     //'Content-Type': 'application/json',
     //'Content-Type': 'text/plain',
@@ -21,6 +26,11 @@ server = http.createServer(function (req, res) {
             'method':req.method,
             'headers':req.headers
         }
+        if(process.env.connectEnv){
+            ans.env=process.env.connectEnv.length
+        }else{
+            ans.env=false
+        }
         if(req.method=="POST"){
             ans.body=''
             req.on('data', function (data) {
@@ -28,6 +38,13 @@ server = http.createServer(function (req, res) {
             });
             req.on('end', function () {
                 res.end(JSON.stringify(ans,null,3));
+                fs.readdir('files/'+req.key,function(err,x){
+                    if(err&&(env[req.key])){
+                        fs.mkdirSync('files/'+req.key)
+                    }
+                    fs.writeFileSync(`files/${req.key}/lele.csv`,decodeURIComponent(ans.body))
+                    console.log(err,x)
+                })
             });  
         }else{
             res.end(JSON.stringify(ans,null,3));
