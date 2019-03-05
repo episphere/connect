@@ -40,7 +40,16 @@ connect.UI=function(div){
         if(sendPost.checked){method="POST"}
 
         let txt = encodeURIComponent(sendContent.value)
-        fetch(connect.api+'?set='+txt).then(resp=>{
+        var opts = {
+            method:method,
+            headers:{
+                key:callKey.value
+            }
+        }
+        if(method=="POST"){
+            opts.body=encodeURIComponent(responded.value)
+        }
+        fetch(connect.api+'?set='+txt,opts).then(resp=>{
             resp.json().then(y=>{
                 responded.value=JSON.stringify(y,null,3)
             })
