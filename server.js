@@ -33,8 +33,8 @@ server = http.createServer(function (req, res) {
         let ans={
             'received':Date(),
             'method':req.method,
-            'headers':req.headers,
-            'url':req.url
+            'url':req.url,
+            'headers':req.headers
         }
         if(process.env.connectEnv){
             ans.env=process.env.connectEnv.length
