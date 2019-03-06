@@ -33,6 +33,23 @@ connect.UI=function(div){
 
     sendPost.onchange=evt=>{sendGet.checked=!evt.target.checked}
     sendGet.onchange=evt=>{sendPost.checked=!evt.target.checked}
+        
+    loadFile.onchange=function(evt){
+        var files=evt.target.files
+        if(files.length>0){
+            let file=files[0]
+            filename.value=file.name // copy name to filename input
+            var reader = new FileReader()
+            reader.onload = function(){
+                sendContent.value=reader.result
+                //debugger
+            }
+            reader.readAsText(file)
+            //debugger
+        }
+        
+    }
+
 
 
     doSend.onclick=evt=>{
