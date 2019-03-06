@@ -4,9 +4,10 @@ port = process.env.PORT || 3000
 env={}
 if(process.env.connectEnv){
     try{
-        env=JSON.parse(decodeURIComponent(process.env.connectEnv).slice(1,-1))
-    }catch{
         env=JSON.parse(decodeURIComponent(process.env.connectEnv))
+    }catch{
+        env={}
+        console.log('no environment keys registered')
     }
     
     //eval("env="+decodeURIComponent(process.env.connectEnv))
