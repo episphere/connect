@@ -67,6 +67,7 @@ connect.UI=function(div){
         }
         if(method=="POST"){
             opts.body=encodeURIComponent(txt)
+            txt="posted"
         }
         fetch(connect.api+'?set='+txt,opts).then(resp=>{
             resp.json().then(y=>{
