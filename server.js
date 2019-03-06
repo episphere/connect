@@ -3,7 +3,8 @@ fs = require('fs')
 port = process.env.PORT || 3000
 env={}
 if(process.env.connectEnv){
-    env=JSON.parse(decodeURIComponent(process.env.connectEnv))
+    //env=JSON.parse(decodeURIComponent(process.env.connectEnv))
+    eval("env="+decodeURIComponent(process.env.connectEnv))
     console.log('env',env)
 }
 
