@@ -33,7 +33,8 @@ server = http.createServer(function (req, res) {
         let ans={
             'received':Date(),
             'method':req.method,
-            'url':req.url,
+            'cmd':req.url,
+            'ans':[],
             'headers':req.headers
         }
         if(process.env.connectEnv){
@@ -69,6 +70,17 @@ server = http.createServer(function (req, res) {
                 })
             });  
         }else{
+            if(ans.cmd=="/help"){
+                ans.ans=[
+                    '/help : lists available commands',
+                    '/files : lists files under your API key (provided as header) <-- NOT DEVELOPED YET',
+                    '/files/<filename> : returns file <-- NOT DEVELOPED YET',
+                    '/files/<filename>/<case id> : returns file row for corresponding case <-- NOT DEVELOPED YET',
+                    '/info/ : returns summary information on your files <-- NOT DEVELOPED YET',
+                    '/info/<filename> : returns detailed information on file <-- NOT DEVELOPED YET',
+                    '/transactions> : log of transactions using your key <-- NOT DEVELOPED YET',
+                ]
+            }
             res.end(JSON.stringify(ans,null,3));
         }
         //res.write(ans, 'utf-8');
