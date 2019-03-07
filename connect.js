@@ -39,6 +39,7 @@ connect.UI=function(div){
         if(files.length>0){
             let file=files[0]
             filename.value=file.name // copy name to filename input
+            sendPost.click() // presume file loaded is to be posted (i.e. it is not a list of commands)
             var reader = new FileReader()
             reader.onload = function(){
                 sendContent.value=reader.result
@@ -49,8 +50,6 @@ connect.UI=function(div){
         }
         
     }
-
-
 
     doSend.onclick=evt=>{
         // method
