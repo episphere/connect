@@ -11,7 +11,7 @@ connect.api=(_=>{
     if(location.origin.match('localhost')){
         return "http://localhost:3000"
     }else{
-        return "https://dceg.herokuapp.com"
+        return "https://dceg2.herokuapp.com"
     }
 })()
 
