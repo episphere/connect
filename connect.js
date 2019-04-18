@@ -53,22 +53,26 @@ connect.UI=function(div){
 
     doSend.onclick=evt=>{
         // method
+        responded.value = ""
         let method = "GET"
         if(sendPost.checked){method="POST"}
 
-        let txt = encodeURIComponent(sendContent.value)
+        let txt = sendContent.value
         var opts = {
             method:method,
             headers:{
                 key:callKey.value,
-                filename:filename.value
+                filename:filename.value,
+                "Content-Type": "application/json"
             }
         }
         if(method=="POST"){
-            opts.body=encodeURIComponent(txt)
-            txt="posted"
+            opts.body=JSON.stringify({
+                data: txt
+            })
+            txt="submit"
         }
-        fetch(connect.api+'/'+txt,opts).then(resp=>{
+        fetch(connect.api+"/"+txt,opts).then(resp=>{
             resp.json().then(y=>{
                 responded.value=JSON.stringify(y,null,3)
             })
