@@ -27,13 +27,13 @@
     "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
     "neat-csv": "^5.0.0",
+    "nodemon": "^1.19.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "@types/koa-logger": "^3.1.1",
     "koa-body": "^4.1.0",
-    "nodemon": "^1.19.0",
     "ts-node": "^8.0.3",
     "tslint": "^5.15.0",
     "tslint-config-standard": "^8.0.1",
