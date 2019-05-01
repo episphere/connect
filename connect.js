@@ -17,7 +17,7 @@ connect.api=(_=>{
 
 connect.UI=function(div){
     let h = '<h3>API status: <span id="apistatus" style="color:red;font-size:small">not connected</span></h3>'
-    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" id="sendGet" checked=true>(commands) | POST<input type="radio" id="sendPost">(data)<br>Key: <input type="password" id="callKey"> | Filename <input id="filename">(data)</span><br>'
+    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" id="sendGet" checked=true>(commands) | POST<input type="radio" id="sendPost">(data)<br>Key: <input type="password" id="callKey"> | Filename <input id="filename">(data) | Type <input id="type">(data)</span><br>'
     h += '<textarea id="sendContent"></textarea>'
     h += '<br><input type="file" id="loadFile">'
     h += '<p style="color:green">Responded:</p>'
@@ -62,13 +62,14 @@ connect.UI=function(div){
             method:method,
             headers:{
                 key:callKey.value,
-                filename:filename.value,
                 "Content-Type": "application/json"
             }
         }
         if(method=="POST"){
             opts.body=JSON.stringify({
-                data: txt
+                data: txt,
+                filename: filename.value,
+                type: type.value
             })
             txt="submit"
         }

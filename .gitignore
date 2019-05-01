@@ -1,6 +1,8 @@
 node_modules/
+pnpm-debug.log
 pnpm-lock.yaml
 boxcredentials.json
 .DS_Store
-files/
+#files/
+#files/*.json
 *.csv

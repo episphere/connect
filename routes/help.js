@@ -1,6 +1,4 @@
-import { Context as KoaContext }  from 'koa'
-
-export function helpHandler(ctx: KoaContext): void {
+module.exports.helpHandler = (ctx) => {
     ctx.status = 200
     ctx.body = [
         '/help : lists available commands',

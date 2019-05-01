@@ -1,0 +1,22 @@
+{
+    "Hello Mark": {
+        "submissions": [{
+            "id": "409fb257-2668-424c-9ed4-1cfa2c937894",
+            "location": "/Users/bhawsarpm/workspace/connect/routes/../files/Hello Mark/409fb257-2668-424c-9ed4-1cfa2c937894_1556741247013_xyz.csv",
+            "siteFilename": "xyz.csv",
+            "submissionTimestamp": 1556741247013,
+            "caseIDs": [{
+                "siteId": "21910010001",
+                "caseId": "61ce1778-ece6-4e11-bb59-313ff495a4d3"
+            }, {
+                "siteId": "21910010002",
+                "caseId": "f5a6997c-90fb-4eaf-8832-76c81756e037"
+            }],
+            "version": 1,
+            "type": "csv"
+        }]
+    },
+    "FHYFHORxImxG6nlbfpfj": {
+        "submissions": []
+    }
+}

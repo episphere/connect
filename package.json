@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./node_modules/.bin/nodemon -w ./server.ts -x node_modules/.bin/ts-node index.ts"
+    "start": "./node_modules/.bin/nodemon -w ./server.js -x node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,13 +19,20 @@
   "homepage": "https://github.com/episphere/connect#readme",
   "dependencies": {
     "@koa/cors": "^2.2.3",
+    "box-node-sdk": "^1.28.0",
+    "box-sdk": "^0.0.8",
+    "json2csv": "^4.5.1",
     "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.0",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "neat-csv": "^5.0.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
     "@types/koa-logger": "^3.1.1",
+    "koa-body": "^4.1.0",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.3",
     "tslint": "^5.15.0",
