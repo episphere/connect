@@ -4,6 +4,4 @@ pnpm-lock.yaml
 package-lock.json
 boxcredentials.json
 .DS_Store
-#files/
-#files/*.json
 *.csv
