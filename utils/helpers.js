@@ -4,7 +4,7 @@ const getValidKeys = async () => {
     /* Function should retrieve validated keys from somewhere, preferably from a DB behind authentication. 
      * Return array of all assigned keys, or maybe get key corresponding to the provided site ID if that is present in the request body.
      * Return a singleton with hardcoded key for now. */
-   return ["Hello Mark", "FHYFHORxImxG6nlbfpfj"]
+   return ["Hello Mark", "FHYFHORxImxG6nlbfpfj", "AaJSCDZqGLqIxYxsjiob"]
 }
 
 const changeFormat = (submissionData, format) => {
