@@ -110,7 +110,7 @@ const retrieveCase = (ctx) => {
 
     } else {
         ctx.status = 404
-        ctx.message = `Incorrect ${caseId} specified!`
+        ctx.message = `Incorrect Connect Case ID ${caseId} specified!`
         return
     }
 }
