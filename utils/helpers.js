@@ -12,10 +12,10 @@ const getValidKeys = async () => {
 
 const changeFormat = (submissionData, format) => {
 	let formattedData = ''
-	
+
 	const delimiter = format === 'tsv' ? '\t' : ','
 	const parserOptions = {
-		fields : Object.keys(submissionData[0]),
+		fields : Array.isArray(submissionData) ? Object.keys(submissionData[0]) : Object.keys(submissionData),
 		delimiter
 	}
 	
