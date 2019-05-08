@@ -73,6 +73,7 @@ module.exports.createSubmission =  async (ctx) => {
         'message': 'Upload Successful',
         'submissionId': submissionId,
         'timestamp': submissionTimestamp,
-        'caseIds': caseIDMap
+        'caseIds': caseIDMap,
+        'submission': submissionData,
     }
 }
