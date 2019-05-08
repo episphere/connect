@@ -19,16 +19,16 @@ async function validateKey(ctx, next) {
     const {filename, type } = ctx.request.body
 
     const validKey = await isAPIKeyValid(ctx.state.key)
-    const validFilename = await isFileValid(filename ,type)
+    // const validFilename = await isFileValid(filename ,type)
 
     if (!validKey) {
         ctx.status = 401
         ctx.body = 'Invalid API Key'
     } 
-    else if (!validFilename) {
-        ctx.status = 400
-        ctx.body = 'Bad filename'
-    } 
+    // else if (!validFilename) {
+    //     ctx.status = 400
+    //     ctx.body = 'Bad filename'
+    // } 
     else {
         await next()
     }
