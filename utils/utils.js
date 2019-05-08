@@ -94,6 +94,7 @@ const getSingleSubmission = (key, submissionId, version) => {
 		
 		return {
             id: submissionWithVersion.id,
+            submissionTimestamp: submissionWithVersion.submissionTimestamp,
             totalSubmissions,
             totalRecords,
             data: submissionData
@@ -101,8 +102,8 @@ const getSingleSubmission = (key, submissionId, version) => {
 	}
 }
 
-const getCaseInSubmission = (submission, caseId) => {
-    const requiredCase = submission.data.find(record => (record["Connect Case ID"] === caseId || record["Site-Specific Participant ID"] === caseId))
+const getCaseInSubmission = (submissionData, caseId) => {
+    const requiredCase = submissionData.find(record => (record["Connect Case ID"] === caseId || record["Site-Specific Participant ID"] === caseId))
     if (!requiredCase) {
         return new Error(`Record corresponding to ID ${caseId} not found!`)
     }

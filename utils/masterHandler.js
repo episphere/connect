@@ -86,7 +86,7 @@ const getSubmissions = (key, lean) => {
 			return lean ? {
 					id: submission.id,
 					filename: submission.filename,
-					timeSubmitted: submission.submissionTimestamp,
+					submissionTimestamp: submission.submissionTimestamp,
 					version: submission.version,
 			} : submission
 		})

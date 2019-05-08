@@ -37,7 +37,7 @@ const retrieveFile = (ctx) => {
 
     let { data } = submission
     if (caseId) {
-        data = getCaseInSubmission(submission, caseId)
+        data = getCaseInSubmission(data, caseId)
         if (data instanceof Error) {
             ctx.status = 400
             ctx.body = data.message
@@ -52,6 +52,7 @@ const retrieveFile = (ctx) => {
     ctx.status = 200
     ctx.body = {
         submissionId: submission.id,
+        submissionTimestamp: submission.submissionTimestamp,
         totalSubmissions,
         totalRecords,
         result: data
@@ -86,7 +87,7 @@ const retrieveCase = (ctx) => {
             return        
         }
     
-        let requiredCase = getCaseInSubmission(submission, caseId)
+        let requiredCase = getCaseInSubmission(submission.data, caseId)
         if (requiredCase instanceof Error) {
             ctx.status = 404
             ctx.body = requiredCase.message
