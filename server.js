@@ -36,6 +36,13 @@ async function validateKey(ctx, next) {
 //     ctx.req.on('data', (data)  => console.log(data.toString('utf-8')))
 //     ctx.req.on('end', ()=> next())
 // })
+
+/*********************************************
+ * TODO: Write middleware that reads master file
+ * only once and stores it in ctx.
+ *********************************************/ 
+
+
 app.use(bodyparser({
     multipart: true,
     jsonLimit: '20mb'
@@ -63,7 +70,7 @@ router.get('/files/:submissionId', retrieveFile)
 
 router.get('/files/:submissionId/:caseId', retrieveFile)
 
-router.get('/files/case/:caseId', retrieveCase)
+router.get('/case/:caseId', retrieveCase)
 
 router.post('/submit', async(ctx) => await createSubmission(ctx))
 

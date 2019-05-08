@@ -2,7 +2,7 @@ const fs = require('fs')
 const parser = require('neat-csv')
 
 const { getSubmissions } = require(`${__dirname}/masterHandler.js`)
-const { getValidKeys, changeFormat, getVersion, generateCaseIDs } = require(`${__dirname}/helpers.js`)
+const { getValidKeys, getVersion, generateCaseIDs } = require(`${__dirname}/helpers.js`)
 
 const isAPIKeyValid = async (key) => {
     /* Return if the API key in the request is a valid one. */
@@ -43,8 +43,9 @@ const isSubmissionValid = (data) => {
     return isValid
 }
 
-const parseData = async (type, data) => {
+const parseData = async (key, type, data) => {
     /* Convert data sent over from CSV/TSV to JSON, return if already JSON. */
+    
     let parsedData = []
     
     if (type === 'csv')
@@ -58,13 +59,13 @@ const parseData = async (type, data) => {
         
     else
         return new Error('Type mismatch')
-
-    const submissionWithCaseIDs = generateCaseIDs(parsedData)
+    
+    const submissionWithCaseIDs = generateCaseIDs(key, parsedData)
 
     return submissionWithCaseIDs
 }
 
-const getSingleSubmission = (key, submissionId, version, format) => {
+const getSingleSubmission = (key, submissionId, version) => {
 		
 	const submissions = getSubmissions(key, false)
 	if (submissions instanceof Error) {
@@ -90,9 +91,7 @@ const getSingleSubmission = (key, submissionId, version, format) => {
 		
 		const submissionLocation = submissionWithVersion.location
 		let submissionData = JSON.parse(fs.readFileSync(submissionLocation))
-		if (format && format !== 'json') {
-            submissionData = changeFormat(submissionData, format)
-		}
+		
 		return {
             id: submissionWithVersion.id,
             data: submissionData
@@ -100,7 +99,7 @@ const getSingleSubmission = (key, submissionId, version, format) => {
 	}
 }
 
-const getSingleCase = (submission, caseId) => {
+const getCaseInSubmission = (submission, caseId) => {
     const requiredCase = submission.data.find(record => (record["Connect Case ID"] === caseId || record["Site-Specific Participant ID"] === caseId))
     if (!requiredCase) {
         return new Error(`Record corresponding to ID ${caseId} not found!`)
@@ -114,5 +113,5 @@ module.exports = {
     isSubmissionValid,
     parseData,
     getSingleSubmission,
-    getSingleCase
+    getCaseInSubmission
 }

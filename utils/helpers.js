@@ -1,13 +1,16 @@
 const uuid = require('uuid/v4')
+const { parse } = require('json2csv')
+
+const { isValidCaseId } = require(`${__dirname}/masterHandler.js`)
 
 const getValidKeys = async () => {
     /* Function should retrieve validated keys from somewhere, preferably from a DB behind authentication. 
-     * Return array of all assigned keys, or maybe get key corresponding to the provided site ID if that is present in the request body.
-     * Return a singleton with hardcoded key for now. */
+	 * Return array of all assigned keys, or maybe get key corresponding to the provided site ID if that 
+	 * is present in the request body. Return a singleton with hardcoded key for now. */
    return ["Hello Mark", "FHYFHORxImxG6nlbfpfj", "AaJSCDZqGLqIxYxsjiob"]
 }
 
-const changeFormat = (submissionData, format) => {
+const changeFormat = async (submissionData, format) => {
 	let formattedData = ''
 	
 	const delimiter = format === 'tsv' ? '\t' : ','
@@ -30,7 +33,6 @@ const getVersion = (submissions, version) => {
     
     if (version) {
 		const submissionsWithVersion = submissions.filter(submission => {
-			console.log(submission.version, version)
 			return submission.version === parseInt(version) 
 		})
 		if (submissionsWithVersion.length !== 1) {
@@ -46,18 +48,37 @@ const getVersion = (submissions, version) => {
 	return submissionWithVersion
 }
 
-const generateCaseIDs = (parsedData) => {
+const generateCaseIDs = (key, parsedData) => {
     const siteIdFieldName = "Site-Specific Participant ID"
-    const caseIDs = []
+    const caseIDs = {
+		"new": [],
+		"updated": [],
+		"all": []
+	}
     
-    const submissionData = parsedData.map(record => {
-        const caseId = uuid()
-        record["Connect Case ID"] = caseId
-        caseIDs.push({
-            "siteId": record[siteIdFieldName],
-            "caseId": caseId
-        })
-        return record
+    const submissionData = parsedData.map((record, idx) => {
+		let siteIdToConnectIdMapping = {}
+		console.log(record)
+		if (record["Connect Case ID"] && isValidCaseId(key, record["Connect Case ID"])) {
+            siteIdToConnectIdMapping = {
+                "siteId": record[siteIdFieldName] || idx,
+				"caseId": record["Connect Case ID"]
+            }
+			caseIDs["updated"].push(siteIdToConnectIdMapping)
+			
+		} else {
+			const caseId = uuid()
+            record["Connect Case ID"] = caseId
+			
+			siteIdToConnectIdMapping = {
+				"siteId": record[siteIdFieldName] || idx,
+                "caseId": caseId
+            }
+            caseIDs["new"].push(siteIdToConnectIdMapping)
+        }
+		caseIDs["all"].push(siteIdToConnectIdMapping)
+		
+		return record
     })
 
     return {

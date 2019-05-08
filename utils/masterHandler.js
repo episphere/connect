@@ -43,11 +43,29 @@ const getLastSubmission = (key, filename) => {
 
 }
 
-const updateMaster = (key, newSubmission) => {
+const updateMaster = (key, newSubmission, caseIDMap) => {
 	/* Write the record of a new submission to the master file. */
 	let masterFileData = JSON.parse(fs.readFileSync(masterFile))
 	
 	masterFileData[key].submissions.push(newSubmission)
+	
+	const caseToSubmissionMap = {
+		'submissionId': newSubmission['id'],
+		'timestamp': newSubmission['submissionTimestamp']
+	}
+	
+	caseIDMap['new'].forEach(caseToSiteMapping => {
+		const { caseId } = caseToSiteMapping
+		masterFileData[key].cases[caseId] = {
+			'1': caseToSubmissionMap
+		}
+	})
+	
+	caseIDMap['updated'].forEach(caseToSiteMapping => {
+		const { caseId } = caseToSiteMapping
+		const latestVersionOfCase = Math.max(Object.keys(masterFileData[key].cases[caseId])) + 1
+		masterFileData[key].cases[caseId][latestVersionOfCase] = caseToSubmissionMap
+	})
 	
 	fs.writeFileSync(masterFile, JSON.stringify(masterFileData))
 	
@@ -73,9 +91,26 @@ const getSubmissions = (key, lean) => {
 	}
 }
 
+const getCases = (key) => {
+	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
+	if (key in masterFileData) {
+		return masterFileData[key].cases
+	} else {
+		return new Error('Key not found')
+	}
+}
+
+const isValidCaseId = (key, caseId) => {
+	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
+	console.log(masterFileData[key]["cases"])
+	return (key in masterFileData) && masterFileData[key]["cases"][caseId]
+}
+
 module.exports = {
 	isDirectoryPresent,
 	getLastSubmission,
 	updateMaster,
-	getSubmissions
+	getSubmissions,
+	getCases,
+	isValidCaseId
 }

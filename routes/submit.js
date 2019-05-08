@@ -25,14 +25,16 @@ module.exports.createSubmission =  async (ctx) => {
         return
     }
     
-    const parsedSubmission = await parseData(type, data)
+    const parsedSubmission = await parseData(key, type, data)
     if (parsedSubmission instanceof Error) {
         ctx.status = 400
         ctx.body = parsedSubmission.message
         return
     }
-
-    const { submissionData, caseIDs } = parsedSubmission
+    
+    const { submissionData, caseIDs } = parsedSubmission    
+    const { all, ...caseIDMap } = caseIDs
+    
     const submissionId = uuid()
     const submissionTimestamp = (new Date).getTime()
     const submissionFilePath = `${filesLocation}/${key}/${submissionId}_${submissionTimestamp}_${filename}`
@@ -43,12 +45,13 @@ module.exports.createSubmission =  async (ctx) => {
             'id': submissionId,
             'location': submissionFilePath,
             'siteFilename': filename,
+            'caseIDs': all,
             submissionTimestamp,
-            caseIDs,
             version,
             type
         }
-        updateMaster(key, newSubmission)
+
+        updateMaster(key, newSubmission, caseIDMap)
     }
     
     const latestVersion = getLastSubmission(key, filename)
@@ -70,6 +73,6 @@ module.exports.createSubmission =  async (ctx) => {
         'message': 'Upload Successful',
         'submissionId': submissionId,
         'timestamp': submissionTimestamp,
-        caseIDs
+        'caseIds': caseIDMap
     }
 }
