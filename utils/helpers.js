@@ -58,7 +58,6 @@ const generateCaseIDs = (key, parsedData) => {
     
     const submissionData = parsedData.map((record, idx) => {
 		let siteIdToConnectIdMapping = {}
-		console.log(record)
 		if (record["Connect Case ID"] && isValidCaseId(key, record["Connect Case ID"])) {
             siteIdToConnectIdMapping = {
                 "siteId": record[siteIdFieldName] || idx,

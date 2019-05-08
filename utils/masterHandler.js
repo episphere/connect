@@ -17,8 +17,6 @@ const isDirectoryPresent = (key) => {
 	const isDirectory = fs.existsSync(`${filesLocation}/${key}`)
 	
 	if (!(key in masterFileData) || !isDirectory) {
-		console.log(`${key} Key Present in Master File: ${key in masterFileData}`)
-		console.log(`Directory exists with name ${key}: ${isDirectory}`)
 		isPresent = false
 	}
 	
@@ -115,7 +113,6 @@ const getCases = (key) => {
 
 const isValidCaseId = (key, caseId) => {
 	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
-	console.log(masterFileData[key]["cases"])
 	return (key in masterFileData) && masterFileData[key]["cases"][caseId]
 }
 
