@@ -7,10 +7,10 @@ const getValidKeys = async () => {
     /* Function should retrieve validated keys from somewhere, preferably from a DB behind authentication. 
 	 * Return array of all assigned keys, or maybe get key corresponding to the provided site ID if that 
 	 * is present in the request body. Return a singleton with hardcoded key for now. */
-   return ["Hello Mark", "FHYFHORxImxG6nlbfpfj", "AaJSCDZqGLqIxYxsjiob", "lSP3Sz6FnyfV7imOlvjF","Rd69wieaphftOeTRiQJQ","dZD798U6AJU7cphyKc7H","oXAG9rlxKEUChnarQqtj","ac6i1hk9tMH4oNZO3KJM"]
+   return process.env["keys"].split(',').map(key => key.trim())
 }
 
-const changeFormat = async (submissionData, format) => {
+const changeFormat = (submissionData, format) => {
 	let formattedData = ''
 	
 	const delimiter = format === 'tsv' ? '\t' : ','

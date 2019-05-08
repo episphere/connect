@@ -21,7 +21,7 @@ const isAPIKeyValid = async (key) => {
 }
 
 const isFileValid = (filename, type) => {
-    /* Check if the filename is okay and if the type is specified. */
+    /* TODO: Check if the filename is okay and if the type is specified. */
     
     let isValid = false
     
@@ -67,11 +67,11 @@ const parseData = async (key, type, data) => {
 
 const getSingleSubmission = (key, submissionId, version) => {
 		
-	const submissions = getSubmissions(key, false)
+	const { submissions, totalSubmissions, totalRecords } = getSubmissions(key, false)
 	if (submissions instanceof Error) {
 		return submissions
-	} else {
-			
+    
+    } else {		
 		let submissionIds = submissions.filter(submission => submission.id === submissionId )
 
 		if (submissionIds.length === 0 ) {
@@ -94,6 +94,8 @@ const getSingleSubmission = (key, submissionId, version) => {
 		
 		return {
             id: submissionWithVersion.id,
+            totalSubmissions,
+            totalRecords,
             data: submissionData
 		}
 	}

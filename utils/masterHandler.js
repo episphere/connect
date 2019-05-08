@@ -49,6 +49,8 @@ const updateMaster = (key, newSubmission, caseIDMap) => {
 	
 	masterFileData[key].submissions.push(newSubmission)
 	
+	const totalSubmissions = masterFileData[key].submissions.length
+
 	const caseToSubmissionMap = {
 		'submissionId': newSubmission['id'],
 		'timestamp': newSubmission['submissionTimestamp']
@@ -66,10 +68,15 @@ const updateMaster = (key, newSubmission, caseIDMap) => {
 		const latestVersionOfCase = Math.max(Object.keys(masterFileData[key].cases[caseId])) + 1
 		masterFileData[key].cases[caseId][latestVersionOfCase] = caseToSubmissionMap
 	})
+
+	const totalRecords = Object.keys(masterFileData[key].cases).length
 	
 	fs.writeFileSync(masterFile, JSON.stringify(masterFileData))
 	
-	return
+	return {
+		totalSubmissions,
+		totalRecords
+	}
 }
 
 const getSubmissions = (key, lean) => {
@@ -77,7 +84,7 @@ const getSubmissions = (key, lean) => {
 	
 	if (key in masterFileData) {
 			
-		return masterFileData[key].submissions.map((submission) => { 
+		const submissions = masterFileData[key].submissions.map((submission) => { 
 			return lean ? {
 					id: submission.id,
 					filename: submission.filename,
@@ -85,6 +92,12 @@ const getSubmissions = (key, lean) => {
 					version: submission.version,
 			} : submission
 		})
+
+		return {
+			submissions,
+			totalSubmissions: submissions.length,
+			totalRecords: Object.keys(masterFileData[key].cases).length
+		}
 	
 	} else {
 		return new Error('Key not found')

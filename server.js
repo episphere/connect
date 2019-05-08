@@ -14,20 +14,21 @@ const app = new Koa()
 const router = new Router()
 
 async function validateKey(ctx, next) {
-    const { key } = ctx.request.header
+
+    ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
     const {filename, type } = ctx.request.body
 
-    const validKey = await isAPIKeyValid(key)
-    // const validFilename = await isFileValid(filename ,type)
+    const validKey = await isAPIKeyValid(ctx.state.key)
+    const validFilename = await isFileValid(filename ,type)
 
     if (!validKey) {
         ctx.status = 401
         ctx.body = 'Invalid API Key'
     } 
-    // else if (!validFilename) {
-    //     ctx.status = 400
-    //     ctx.body = 'Bad filename'
-    // } 
+    else if (!validFilename) {
+        ctx.status = 400
+        ctx.body = 'Bad filename'
+    } 
     else {
         await next()
     }
@@ -52,7 +53,7 @@ app.use(cors({
     'origin': '*', //TODO: Limit Origins?
     'credentials': 'true',
     'allowMethods': 'POST,GET,OPTIONS,PUT,DELETE',
-    'allowHeaders': 'Accept,Content-Type,Content-Length,Accept-Encoding,X-CSRF-Token,Authorization,key'
+    'allowHeaders': 'Accept,Content-Type,Content-Length,Accept-Encoding,X-CSRF-Token,Authorization'
 }))
 app.use(router.routes())
 app.use(router.allowedMethods())

@@ -10,7 +10,7 @@ const filesLocation = `${__dirname}/../files`
 
 module.exports.createSubmission =  async (ctx) => {
     /* Create a submission for the data sent across by the site. */
-    const { key } = ctx.request.header
+    const { key } = ctx.state
     const { filename, type, data } = ctx.request.body
 
     if (!isDirectoryPresent(key)) {
@@ -51,7 +51,8 @@ module.exports.createSubmission =  async (ctx) => {
             type
         }
 
-        updateMaster(key, newSubmission, caseIDMap)
+        const totalNum = updateMaster(key, newSubmission, caseIDMap)
+        return totalNum
     }
     
     const latestVersion = getLastSubmission(key, filename)
@@ -61,11 +62,11 @@ module.exports.createSubmission =  async (ctx) => {
     if(latestVersion === 0) {
         // File being submitted for the first time. Write directly to disk.
         version = 1
-        writeSubmission(version)
+        var { totalSubmissions, totalRecords } = writeSubmission(version)
     } else {
         // CODE TO UPDATE SUBMISSION HERE!!! Overwrite with new version number for now.
         version = latestVersion + 1
-        writeSubmission(version)
+        var { totalSubmissions, totalRecords } = writeSubmission(version)
     }
     
     ctx.status = 200
@@ -73,6 +74,8 @@ module.exports.createSubmission =  async (ctx) => {
         'message': 'Upload Successful',
         'submissionId': submissionId,
         'timestamp': submissionTimestamp,
+        totalSubmissions,
+        totalRecords,
         'caseIds': caseIDMap,
         'submission': submissionData,
     }

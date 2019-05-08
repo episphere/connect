@@ -3,10 +3,10 @@ const { getSubmissions, getCases } = require(`${__dirname}/../utils/masterHandle
 const { getSingleSubmission, getCaseInSubmission } = require(`${__dirname}/../utils/utils.js`)
 const { changeFormat } = require(`${__dirname}/../utils/helpers.js`)
 
-const retrieveFiles =  (ctx) => {
+const retrieveFiles = (ctx) => {
     // Return a (paginated?) list of all submissions corresponding to that API key.
-    const { key } = ctx.request.header
-    const submissions = getSubmissions(key, true)
+    const { key } = ctx.state
+    const { submissions, totalSubmissions, totalRecords } = getSubmissions(key, true)
     if (submissions instanceof Error) {
         ctx.status = 400
         ctx.body = submissions.message
@@ -14,24 +14,25 @@ const retrieveFiles =  (ctx) => {
     }
     ctx.status = 200
     ctx.body = {
-        result: submissions
+        result: submissions,
+        totalSubmissions,
+        totalRecords
     }
     return
 }
 
-const retrieveFile =  async (ctx) => {
+const retrieveFile = (ctx) => {
     // Retrieve data based on the user's API Key, and depending on whether they passed in a submission ID, case ID or both.
-    const { key } = ctx.request.header
+    const { key } = ctx.state
     const { version, format } = ctx.request.query
     const { submissionId, caseId } = ctx.params
     
-    const submission = getSingleSubmission(key, submissionId, parseInt(version))
+    const { totalSubmissions, totalRecords, ...submission } = getSingleSubmission(key, submissionId, parseInt(version))
     
     if (submission instanceof Error) {
         ctx.status = 400
         ctx.body = submission.message
         return
-    
     }
 
     let { data } = submission
@@ -45,22 +46,24 @@ const retrieveFile =  async (ctx) => {
     }
     
     if (format && format !== 'json') {
-        data = await changeFormat(data, format)
+        data = changeFormat(data, format)
     }
 
     ctx.status = 200
     ctx.body = {
         submissionId: submission.id,
+        totalSubmissions,
+        totalRecords,
         result: data
     }
     return
 
 }
 
-const retrieveCase = async (ctx) => {
+const retrieveCase = (ctx) => {
     // Retrieve data of a specific case. The data returned should be the most recently updated submission for that case, or,
     // if the submission Id is passed in the REST call, the data of that case from that submission ID.
-    const { key } = ctx.request.header
+    const { key } = ctx.state
     const { caseVersion, format } = ctx.request.query
     const { caseId } = ctx.params
 
@@ -75,7 +78,8 @@ const retrieveCase = async (ctx) => {
     if (caseVersions) {
         const version = caseVersion || Math.max(...Object.keys(caseVersions).map(Number))
         const { submissionId, timestamp } = caseVersions[version]
-        const submission = getSingleSubmission(key, submissionId)
+        
+        const { totalRecords, totalSubmissions, ...submission } = getSingleSubmission(key, submissionId)
         if (submission instanceof Error) {
             ctx.status = 404
             ctx.body = submission.message
@@ -98,6 +102,8 @@ const retrieveCase = async (ctx) => {
             "submissionId": submission.id,
             "submissionTimestamp": timestamp,
             version,
+            totalSubmissions,
+            totalRecords,
             result: requiredCase
         }
         return
