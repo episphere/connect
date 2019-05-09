@@ -7,13 +7,7 @@ connect=function(){
     if(div){connect.UI(div)}
 }
 
-connect.api=(_=>{
-    if(location.origin.match('localhost')){
-        return "http://localhost:3000"
-    }else{
-        return "https://dceg.herokuapp.com"
-    }
-})()
+connect.api = location.origin.match('localhost') ? "http://localhost:3000" : "https://episphere-connect.herokuapp.com"
 
 connect.UI=function(div){
     let h = '<h3>API status: <span id="apistatus" style="color:red;font-size:small">not connected</span></h3>'
