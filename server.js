@@ -3,6 +3,7 @@ const Router = require('koa-router')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const cors = require('@koa/cors')
+const fs = require('fs')
 
 const { helpHandler } = require('./routes/help')
 const { retrieveFiles, retrieveFile, retrieveCase } = require('./routes/retrieve')
@@ -43,7 +44,11 @@ async function validateKey(ctx, next) {
  * only once and stores it in ctx.
  *********************************************/ 
 
-
+app.use(async (ctx, next) => {
+    const masterFileLocation = `${__dirname}/files/dir.json`
+    ctx.state.masterFile = JSON.parse(fs.readFileSync(masterFileLocation))
+    await next()
+})
 app.use(bodyparser({
     multipart: true,
     jsonLimit: '20mb'

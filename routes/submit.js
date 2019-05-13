@@ -13,7 +13,7 @@ module.exports.createSubmission =  async (ctx) => {
     const { key } = ctx.state
     const { filename, type, data } = ctx.request.body
 
-    if (!isDirectoryPresent(key)) {
+    if (!isDirectoryPresent(ctx, key)) {
         ctx.status = 400
         ctx.body = "API Key Not Found in Storage!"
         return
@@ -51,11 +51,11 @@ module.exports.createSubmission =  async (ctx) => {
             type
         }
 
-        const totalNum = updateMaster(key, newSubmission, caseIDMap)
+        const totalNum = updateMaster(ctx, key, newSubmission, caseIDMap)
         return totalNum
     }
     
-    const latestVersion = getLastSubmission(key, filename)
+    const latestVersion = getLastSubmission(ctx, key, filename)
 
     let version = 0
     

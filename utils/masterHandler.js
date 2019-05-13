@@ -2,9 +2,9 @@ const fs = require('fs')
 const { parse } = require('json2csv')
 
 const filesLocation = `${__dirname}/../files`
-const masterFile = `${filesLocation}/dir.json`
+const masterFileLocation = `${filesLocation}/dir.json`
 
-const isDirectoryPresent = (key) => {
+const isDirectoryPresent = (ctx, key) => {
 	/* Check if the directory corresponding to the API Key is present.
 		* Since the directory is created automatically and added to the master
 		* file on generation of the API Key, it must be present in both. 
@@ -13,24 +13,24 @@ const isDirectoryPresent = (key) => {
 
 	let isPresent = true
 
-	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
+	const { masterFile } = ctx.state
 	const isDirectory = fs.existsSync(`${filesLocation}/${key}`)
 	
-	if (!(key in masterFileData) || !isDirectory) {
+	if (!(key in masterFile) || !isDirectory) {
 		isPresent = false
 	}
 	
 	return isPresent
 }
 
-const getLastSubmission = (key, filename) => {
+const getLastSubmission = (ctx, key, filename) => {
 		/* Check if there is already a file with the same name as the submitted file, 
 		 * so that it can be understood if this submission is an update. Return the latest
 		 * version number of the submission if it a file with the same name was previously 
 		 * submitted. */
 		
-	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
-	const previousSubmissions = masterFileData[key].submissions.filter(record => record.siteFilename.includes(filename))
+	const { masterFile } = ctx.state
+	const previousSubmissions = masterFile[key].submissions.filter(record => record.siteFilename.includes(filename))
 	
 	if (previousSubmissions.length === 0){
 		return 0
@@ -41,13 +41,13 @@ const getLastSubmission = (key, filename) => {
 
 }
 
-const updateMaster = (key, newSubmission, caseIDMap) => {
+const updateMaster = (ctx, key, newSubmission, caseIDMap) => {
 	/* Write the record of a new submission to the master file. */
-	let masterFileData = JSON.parse(fs.readFileSync(masterFile))
+	let { masterFile } = ctx.state
 	
-	masterFileData[key].submissions.push(newSubmission)
+	masterFile[key].submissions.push(newSubmission)
 	
-	const totalSubmissions = masterFileData[key].submissions.length
+	const totalSubmissions = masterFile[key].submissions.length
 
 	const caseToSubmissionMap = {
 		'submissionId': newSubmission['id'],
@@ -56,20 +56,21 @@ const updateMaster = (key, newSubmission, caseIDMap) => {
 	
 	caseIDMap['new'].forEach(caseToSiteMapping => {
 		const { caseId } = caseToSiteMapping
-		masterFileData[key].cases[caseId] = {
+		masterFile[key].cases[caseId] = {
 			'1': caseToSubmissionMap
 		}
 	})
 	
 	caseIDMap['updated'].forEach(caseToSiteMapping => {
 		const { caseId } = caseToSiteMapping
-		const latestVersionOfCase = Math.max(Object.keys(masterFileData[key].cases[caseId])) + 1
-		masterFileData[key].cases[caseId][latestVersionOfCase] = caseToSubmissionMap
+		const latestVersionOfCase = Math.max(Object.keys(masterFile[key].cases[caseId])) + 1
+		masterFile[key].cases[caseId][latestVersionOfCase] = caseToSubmissionMap
 	})
 
-	const totalRecords = Object.keys(masterFileData[key].cases).length
+	const totalRecords = Object.keys(masterFile[key].cases).length
 	
-	fs.writeFileSync(masterFile, JSON.stringify(masterFileData))
+	ctx.state.masterFile = masterFile
+	fs.writeFileSync(masterFileLocation, JSON.stringify(masterFile))
 	
 	return {
 		totalSubmissions,
@@ -77,12 +78,12 @@ const updateMaster = (key, newSubmission, caseIDMap) => {
 	}
 }
 
-const getSubmissions = (key, lean) => {
-	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
+const getSubmissions = (ctx, key, lean) => {
+	const { masterFile } = ctx.state
 	
-	if (key in masterFileData) {
+	if (key in masterFile) {
 			
-		const submissions = masterFileData[key].submissions.map((submission) => { 
+		const submissions = masterFile[key].submissions.map((submission) => { 
 			return lean ? {
 					id: submission.id,
 					filename: submission.filename,
@@ -94,7 +95,7 @@ const getSubmissions = (key, lean) => {
 		return {
 			submissions,
 			totalSubmissions: submissions.length,
-			totalRecords: Object.keys(masterFileData[key].cases).length
+			totalRecords: Object.keys(masterFile[key].cases).length
 		}
 	
 	} else {
@@ -102,18 +103,22 @@ const getSubmissions = (key, lean) => {
 	}
 }
 
-const getCases = (key) => {
-	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
-	if (key in masterFileData) {
-		return masterFileData[key].cases
+const getCases = (ctx, key) => {
+	const { masterFile } = ctx.state
+	if (key in masterFile) {
+		return masterFile[key].cases
 	} else {
 		return new Error('Key not found')
 	}
 }
 
-const isValidCaseId = (key, caseId) => {
-	const masterFileData = JSON.parse(fs.readFileSync(masterFile))
-	return (key in masterFileData) && masterFileData[key]["cases"][caseId]
+const isValidCaseId = (ctx, key, caseId) => {
+	const { masterFile } = ctx.state
+	
+	if (key in masterFile && masterFile[key]["cases"][caseId]) 
+		return Object.keys(masterFile[key]["cases"]).length
+	else 
+		return -1
 }
 
 module.exports = {

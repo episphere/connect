@@ -6,7 +6,7 @@ const { changeFormat } = require(`${__dirname}/../utils/helpers.js`)
 const retrieveFiles = (ctx) => {
     // Return a (paginated?) list of all submissions corresponding to that API key.
     const { key } = ctx.state
-    const { submissions, totalSubmissions, totalRecords } = getSubmissions(key, true)
+    const { submissions, totalSubmissions, totalRecords } = getSubmissions(ctx, key, true)
     if (submissions instanceof Error) {
         ctx.status = 400
         ctx.body = submissions.message
@@ -27,7 +27,7 @@ const retrieveFile = (ctx) => {
     const { version, format } = ctx.request.query
     const { submissionId, caseId } = ctx.params
     
-    const { totalSubmissions, totalRecords, ...submission } = getSingleSubmission(key, submissionId, parseInt(version))
+    const { totalSubmissions, totalRecords, ...submission } = getSingleSubmission(ctx, key, submissionId, parseInt(version))
     
     if (submission instanceof Error) {
         ctx.status = 400
@@ -68,7 +68,7 @@ const retrieveCase = (ctx) => {
     const { caseVersion, format } = ctx.request.query
     const { caseId } = ctx.params
 
-    const cases = getCases(key)
+    const cases = getCases(ctx, key)
     if (cases instanceof Error) {
         ctx.status = 400
         ctx.body = cases.message
@@ -80,7 +80,7 @@ const retrieveCase = (ctx) => {
         const version = caseVersion || Math.max(...Object.keys(caseVersions).map(Number))
         const { submissionId, timestamp } = caseVersions[version]
         
-        const { totalRecords, totalSubmissions, ...submission } = getSingleSubmission(key, submissionId)
+        const { totalRecords, totalSubmissions, ...submission } = getSingleSubmission(ctx, key, submissionId)
         if (submission instanceof Error) {
             ctx.status = 404
             ctx.body = submission.message

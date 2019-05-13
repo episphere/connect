@@ -65,9 +65,9 @@ const parseData = async (key, type, data) => {
     return submissionWithCaseIDs
 }
 
-const getSingleSubmission = (key, submissionId, version) => {
+const getSingleSubmission = (ctx, key, submissionId, version) => {
 		
-	const { submissions, totalSubmissions, totalRecords } = getSubmissions(key, false)
+	const { submissions, totalSubmissions, totalRecords } = getSubmissions(ctx, key, false)
 	if (submissions instanceof Error) {
 		return submissions
     
