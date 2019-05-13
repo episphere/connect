@@ -49,7 +49,7 @@ const getVersion = (submissions, version) => {
 }
 
 const generateCaseIDs = (key, parsedData) => {
-    const siteIdFieldName = "Site-Specific Participant ID"
+    const siteIdFieldName = "Site_Subject_ID"
     const caseIDs = {
 		"new": [],
 		"updated": [],
