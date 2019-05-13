@@ -5,4 +5,4 @@ package-lock.json
 boxcredentials.json
 .DS_Store
 *.csv
-*.sh
+#*.sh

@@ -76,7 +76,10 @@ module.exports.createSubmission =  async (ctx) => {
         submissionTimestamp,
         totalSubmissions,
         totalRecords,
-        'caseIds': caseIDMap,
+        'caseIds': {
+            'casesInSubmission': all.length,
+            ...caseIDMap
+        },
         'submission': submissionData,
     }
 }
