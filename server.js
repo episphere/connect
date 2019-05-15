@@ -66,9 +66,14 @@ app.use(router.allowedMethods())
 
 /*****************  ROUTES  *******************************/
 
-router.use(['/files', '/files/:submissionId', '/files/:submissionId/:caseId', '/case/:caseId', '/submit'], validateKey)
+router.use(['/validate', '/files', '/files/:submissionId', '/files/:submissionId/:caseId', '/case/:caseId', '/submit'], validateKey)
 
 router.get('/help', helpHandler)
+
+router.get('/validate', ctx => {
+    ctx.status = 200
+    ctx.body = 'Key Valid'
+})
 
 router.get('/files', retrieveFiles)
 
