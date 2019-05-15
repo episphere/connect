@@ -62,8 +62,8 @@ const generateCaseIDs = (key, parsedData) => {
 		let siteIdToConnectIdMapping = {}
 		if (record[connectIdField] && isValidCaseId(key, record[connectIdField])) {
             siteIdToConnectIdMapping = {
-                "siteId": record[siteIdFieldName] || idx,
-				"caseId": record[connectIdField]
+                "siteCaseId": record[siteIdFieldName] || idx,
+				"connectCaseId": record[connectIdField]
             }
 			caseIDs["updated"].push(siteIdToConnectIdMapping)
 			
@@ -72,8 +72,8 @@ const generateCaseIDs = (key, parsedData) => {
             record[connectIdField] = caseId
 			
 			siteIdToConnectIdMapping = {
-				"siteId": record[siteIdFieldName] || idx,
-                "caseId": caseId
+				"siteCaseId": record[siteIdFieldName] || idx,
+                "connectCaseId": caseId
             }
             caseIDs["new"].push(siteIdToConnectIdMapping)
         }
