@@ -1,98 +1,96 @@
-http = require('http')
-fs = require('fs')
-port = process.env.PORT || 3000
-env={}
-if(process.env.connectEnv){
-    try{
-        env=JSON.parse(decodeURIComponent(process.env.connectEnv))
-    }catch{
-        env={}
-        console.log('no environment keys registered')
+const Koa = require('koa')
+const Router = require('koa-router')
+const bodyparser = require('koa-bodyparser')
+const logger = require('koa-logger')
+const cors = require('@koa/cors')
+const fs = require('fs')
+
+const { helpHandler } = require('./routes/help')
+const { retrieveFiles, retrieveFile, retrieveCase } = require('./routes/retrieve')
+const { createSubmission } = require('./routes/submit')
+
+const { isAPIKeyValid, isFileValid } = require('./utils/utils')
+
+const app = new Koa()
+const router = new Router()
+
+async function validateKey(ctx, next) {
+
+    ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
+    const {filename, type } = ctx.request.body
+
+    const validKey = await isAPIKeyValid(ctx.state.key)
+    // const validFilename = await isFileValid(filename ,type)
+
+    if (!validKey) {
+        ctx.status = 401
+        ctx.body = 'Invalid API Key'
+    } 
+    // else if (!validFilename) {
+    //     ctx.status = 400
+    //     ctx.body = 'Bad filename'
+    // } 
+    else {
+        await next()
     }
-    
-    //console.log('env',env)
 }
+// app.use(async (ctx, next) => {
+//     ctx.req.on('data', (data)  => console.log(data.toString('utf-8')))
+//     ctx.req.on('end', ()=> next())
+// })
+
+/*********************************************
+ * TODO: Write middleware that reads master file
+ * only once and stores it in ctx.
+ *********************************************/ 
+
+app.use(async (ctx, next) => {
+    const masterFileLocation = `${__dirname}/files/dir.json`
+    ctx.state.masterFile = JSON.parse(fs.readFileSync(masterFileLocation))
+    await next()
+})
+app.use(bodyparser({
+    multipart: true,
+    jsonLimit: '20mb'
+}))
+app.use(logger())
+app.use(cors({
+    'origin': '*', //TODO: Limit Origins?
+    'credentials': 'true',
+    'allowMethods': 'POST,GET,OPTIONS,PUT,DELETE',
+    'allowHeaders': 'Accept,Content-Type,Content-Length,Accept-Encoding,X-CSRF-Token,Authorization'
+}))
+app.use(router.routes())
+app.use(router.allowedMethods())
 
 
+/*****************  ROUTES  *******************************/
 
-server = http.createServer(function (req, res) {
-    res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin':'*',
-        'Access-Control-Allow-Headers':'key,filename'
-    });
-    req.headers.key=req.headers.key||"NA"
-    req.headers.filename=req.headers.filename||"NA"
-    //'Content-Type': 'application/json',
-    //'Content-Type': 'text/plain',
-    //console.log(req)
-    if(req.url=="/favicon.ico"){
-        res.end()
-    }else{
-        console.log(`call from ${req.headers.host} at ${Date()}`)
-        //console.log(req)
-        let ans={
-            'received':Date(),
-            'method':req.method,
-            'cmd':req.url,
-            'ans':[],
-            'headers':req.headers
-        }
-        if(process.env.connectEnv){
-            ans.env=process.env.connectEnv.length
-        }else{
-            ans.env=false
-        }
-        if(req.method=="POST"){
-            ans.body=''
-            req.on('data', function (data) {
-                ans.body += data;
-            });
-            req.on('end', function () {
-                fs.readdir('files/'+req.headers.key,function(err,x){
-                    if(err){
-                        if(env[req.headers.key]){ // if key is registered
-                            fs.mkdirSync('files/'+req.headers.key)
-                            //fs.writeFileSync(`files/${req.headers.key}/${req.headers.filename}`,decodeURIComponent(ans.body))
-                        }else{
-                            console.log('unregistered key :',err,req.headers.key,req.headers.filename)
-                            ans.ans.push(`unregistered key : ${err}, ${req.headers.key}, ${req.headers.filename}`)
-                        }
-                    }
-                    fs.readdir('files/'+req.headers.key,function(err,x){
-                        if(x){
-                            fs.writeFileSync(`files/${req.headers.key}/${req.headers.filename}`,decodeURIComponent(ans.body))
-                            ans.ans.push(`${req.headers.filename} saved at ${Date()}`)
-                        }else{
-                            console.log('unknown key, permission denied')
-                            ans.ans.push('unknown key, permission denied')
-                        }
-                        res.end(JSON.stringify(ans,null,3));
-                    })       
-                    //console.log(err,x)
-                })
+router.use(['/validate', '/files', '/files/:submissionId', '/files/:submissionId/:caseId', '/case/:caseId', '/submit'], validateKey)
 
-            });  
-        }else{
-            if(ans.cmd=="/help"){
-                ans.ans=[
-                    '/help : lists available commands',
-                    '/files : lists files under your API key (provided as header) <-- PENDING YOUR FEEDBACK',
-                    '/files/<filename> : returns file <-- PENDING YOUR FEEDBACK',
-                    '/files/<filename>/<case id> : returns file row for corresponding case <-- PENDING YOUR FEEDBACK',
-                    '/info/ : returns summary information on your files <-- PENDING YOUR FEEDBACK',
-                    '/info/<filename> : returns detailed information on file <-- PENDING YOUR FEEDBACK',
-                    '/transactions> : log of transactions using your key <-- PENDING YOUR FEEDBACK',
-                ]
-            }
-            res.end(JSON.stringify(ans,null,3));
-        }
-        //res.write(ans, 'utf-8');
-        
-    }
-}); 
- 
-// listen on the port
-server.listen(port, function () {
-    console.log('api up on port: ' + port); 
-});
+router.get('/help', helpHandler)
+
+router.get('/validate', ctx => {
+    ctx.status = 200
+    ctx.body = 'Key Valid'
+})
+
+router.get('/files', retrieveFiles)
+
+router.get('/files/:submissionId', retrieveFile)
+
+router.get('/files/:submissionId/:caseId', retrieveFile)
+
+router.get('/case/:caseId', retrieveCase)
+
+router.post('/submit', async(ctx) => await createSubmission(ctx))
+
+router.all('/', (ctx) => {
+    ctx.status = 200
+})
+
+/**********************************************************/
+
+const port = process.env.PORT || 3000
+app.listen(port)
+console.log(`🌍  Server listening on port ${port}`)
