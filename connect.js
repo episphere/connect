@@ -11,7 +11,7 @@ connect.api= location.origin.match('localhost') ? "http://localhost:3000" : "htt
 
 connect.UI=function(div){
     let h = '<h3>API status: <span id="apistatus" style="color:red;font-size:small">not connected</span></h3>'
-    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" name="HTTPVerb" id="sendGet" checked=true>(retrieve) | POST<input type="radio" name="HTTPVerb" id="sendPost">(submit)<br/><br/>Key: <input type="password" id="callKey"> | Filename <input id="filename">(data) | Type <input id="type">(data)</span><br/><br/>'
+    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" name="HTTPVerb" id="sendGet" checked=true>(retrieve) | POST<input type="radio" name="HTTPVerb" id="sendPost">(submit)<br/><br/>Key: <input type="password" id="callKey"> | Filename <input id="filename">(data) | Type <select id="type"><option value="csv">csv</option><option value="tsv">tsv</option><option value="json">json</option></select>(data)</span><br/><br/>'
     h += '<textarea id="sendContent"></textarea>'
     h += '<br><input type="file" id="loadFile">'
     h += '<p style="color:green">Responded:</p>'
