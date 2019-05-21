@@ -16,13 +16,13 @@ module.exports.createSubmission =  async (ctx) => {
 
     if (!isDirectoryPresent(ctx, key)) {
         ctx.status = 400
-        ctx.body = getResponseBody('API Key Not Found in Storage!')
+        ctx.body = getResponseBody('API Key Not Found in Storage!', 400)
         return
     }
     
     if (!isSubmissionValid(data)) {
         ctx.status = 400
-        ctx.body = getResponseBody('Malformed Request!')
+        ctx.body = getResponseBody('Malformed Request!', 400)
         return
     }
     

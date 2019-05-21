@@ -17,7 +17,7 @@ const router = new Router()
 async function validateKey(ctx, next) {
     if(ctx.request.headers['authorization'] === undefined){
         ctx.status = 401
-        ctx.body = getResponseBody('API Key not found')
+        ctx.body = getResponseBody('Authentication failed!', 401)
         return;
     }
     ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
@@ -28,7 +28,7 @@ async function validateKey(ctx, next) {
 
     if (!validKey) {
         ctx.status = 401
-        ctx.body = getResponseBody('Invalid API Key')
+        ctx.body = getResponseBody('Invalid API Key!', 401)
     } 
     // else if (!validFilename) {
     //     ctx.status = 400
@@ -76,12 +76,12 @@ router.get('/help', helpHandler)
 
 router.get('/validate', ctx => {
     ctx.status = 200
-    ctx.body = getResponseBody('Key Valid')
+    ctx.body = getResponseBody('Key Valid', 200)
 })
 
 router.get('/status', ctx => {
     ctx.status = 200
-    ctx.body = getResponseBody('Ok')
+    ctx.body = getResponseBody('Ok', 200)
 })
 
 router.get('/files', retrieveFiles)
@@ -100,7 +100,7 @@ router.all('/', (ctx) => {
 
 router.get('*', ctx => {
     ctx.status = 404
-    ctx.body = getResponseBody('Resource Not Found!')
+    ctx.body = getResponseBody('Resource Not Found!', 404)
 })
 /**********************************************************/
 

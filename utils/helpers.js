@@ -88,10 +88,11 @@ const generateCaseIDs = (key, parsedData) => {
     }
 }
 
-const getResponseBody = (message) => {
+const getResponseBody = (message, code) => {
 
 	return {
-		message
+		message,
+		code
 	}
 }
 
