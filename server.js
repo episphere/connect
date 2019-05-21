@@ -76,12 +76,12 @@ router.get('/help', helpHandler)
 
 router.get('/validate', ctx => {
     ctx.status = 200
-    ctx.body = getResponseBody('Key Valid', 200)
+    ctx.body = getResponseBody('Key Valid!', 200)
 })
 
 router.get('/status', ctx => {
     ctx.status = 200
-    ctx.body = getResponseBody('Ok', 200)
+    ctx.body = getResponseBody('Ok!', 200)
 })
 
 router.get('/files', retrieveFiles)
@@ -96,6 +96,7 @@ router.post('/submit', async(ctx) => await createSubmission(ctx))
 
 router.all('/', (ctx) => {
     ctx.status = 200
+    ctx.body = getResponseBody('Ok!', 200)
 })
 
 router.get('*', ctx => {
