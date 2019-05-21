@@ -15,7 +15,11 @@ const app = new Koa()
 const router = new Router()
 
 async function validateKey(ctx, next) {
-
+    if(ctx.request.headers['authorization'] === undefined){
+        ctx.status = 401
+        ctx.body = getResponseBody('API Key not found')
+        return;
+    }
     ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
     const {filename, type } = ctx.request.body
 
