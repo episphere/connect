@@ -66,7 +66,7 @@ app.use(router.allowedMethods())
 
 /*****************  ROUTES  *******************************/
 
-router.use(['/validate', '/files', '/files/:submissionId', '/files/:submissionId/:caseId', '/case/:caseId', '/submit'], validateKey)
+router.use(['/validate', '/status', '/files', '/files/:submissionId', '/files/:submissionId/:caseId', '/case/:caseId', '/submit'], validateKey)
 
 router.get('/help', helpHandler)
 
