@@ -75,6 +75,11 @@ router.get('/validate', ctx => {
     ctx.body = getResponseBody('Key Valid')
 })
 
+router.get('/status', ctx => {
+    ctx.status = 200
+    ctx.body = getResponseBody('Ok')
+})
+
 router.get('/files', retrieveFiles)
 
 router.get('/files/:submissionId', retrieveFile)
@@ -89,6 +94,10 @@ router.all('/', (ctx) => {
     ctx.status = 200
 })
 
+router.get('*', ctx => {
+    ctx.status = 404
+    ctx.body = getResponseBody('Resource Not Found!')
+})
 /**********************************************************/
 
 const port = process.env.PORT || 3000
