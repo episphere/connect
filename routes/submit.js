@@ -3,6 +3,7 @@ const uuid = require('uuid/v4')
 const csv = require('neat-csv')
 
 const { isSubmissionValid, parseData } = require(`${__dirname}/../utils/utils`)
+const { getResponseBody } = require(`${__dirname}/../utils/helpers`)
 const { isDirectoryPresent, getLastSubmission, updateMaster } = require(`${__dirname}/../utils/masterHandler`)
 
 const filesLocation = `${__dirname}/../files`
@@ -15,13 +16,13 @@ module.exports.createSubmission =  async (ctx) => {
 
     if (!isDirectoryPresent(ctx, key)) {
         ctx.status = 400
-        ctx.body = "API Key Not Found in Storage!"
+        ctx.body = getResponseBody('API Key Not Found in Storage!')
         return
     }
     
     if (!isSubmissionValid(data)) {
         ctx.status = 400
-        ctx.body = "Malformed Request!"
+        ctx.body = getResponseBody('Malformed Request!')
         return
     }
     

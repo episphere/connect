@@ -8,7 +8,7 @@ const fs = require('fs')
 const { helpHandler } = require('./routes/help')
 const { retrieveFiles, retrieveFile, retrieveCase } = require('./routes/retrieve')
 const { createSubmission } = require('./routes/submit')
-
+const { getResponseBody } = require('./utils/helpers')
 const { isAPIKeyValid, isFileValid } = require('./utils/utils')
 
 const app = new Koa()
@@ -24,7 +24,7 @@ async function validateKey(ctx, next) {
 
     if (!validKey) {
         ctx.status = 401
-        ctx.body = 'Invalid API Key'
+        ctx.body = getResponseBody('Invalid API Key')
     } 
     // else if (!validFilename) {
     //     ctx.status = 400
@@ -72,7 +72,7 @@ router.get('/help', helpHandler)
 
 router.get('/validate', ctx => {
     ctx.status = 200
-    ctx.body = 'Key Valid'
+    ctx.body = getResponseBody('Key Valid')
 })
 
 router.get('/files', retrieveFiles)
