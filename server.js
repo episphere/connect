@@ -17,7 +17,7 @@ const router = new Router()
 async function validateKey(ctx, next) {
     if(ctx.request.headers['authorization'] === undefined){
         ctx.status = 401
-        ctx.body = getResponseBody('Authentication failed!', 401)
+        ctx.body = getResponseBody('Authorization failed!', 401)
         return;
     }
     ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
