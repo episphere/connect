@@ -60,7 +60,7 @@ connect.UI=function(div){
             method="POST"
         }
 
-        let txt = sendContent.value
+        let txt = sendContent.value === "" ? "status" : sendContent.value
         var opts = {
             method:method,
             headers:{
