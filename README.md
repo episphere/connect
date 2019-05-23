@@ -8,4 +8,4 @@ Connect API for DCEG's Cohort Study, ingestion app live at https://episphere.git
 
 ![](https://episphere.github.io/connect/Connect%20IT%20dev%20Timeline.png)
 
-![](https://episphere.github.io/connect/connectAPI.png)
+[![](https://episphere.github.io/connect/connectAPI.png)](https://episphere.github.io/connect/connectAPI.pptx)
