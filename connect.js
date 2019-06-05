@@ -65,14 +65,12 @@ connect.UI=function(div){
                 "Content-Type": "application/json"
             }
         }
+        let errorMessage = document.getElementById('error');
         if(method=="POST"){
             const fileType = document.getElementById('fileType').value;
-            let errorMessage = document.getElementById('error');
             if(filename.value === "" || fileType.value === ""){
                 errorMessage.innerHTML = 'Please upload a file!';
                 return;
-            }else {
-                errorMessage.innerHTML = '';
             }
             
             opts.body=JSON.stringify({
@@ -82,6 +80,7 @@ connect.UI=function(div){
             })
             txt="submit"
         }
+        errorMessage.innerHTML = '';
         fetch(connect.api+"/"+txt,opts).then(resp=>{
             resp.json().then(y=>{
                 responded.value=JSON.stringify(y,null,3)
