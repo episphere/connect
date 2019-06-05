@@ -34,7 +34,6 @@ connect.UI=function(div){
             let file=files[0]
             let fileType = file.name.slice(file.name.lastIndexOf('.')+1, file.name.length);
             filename.value=file.name // copy name to filename input
-            filename.type=fileType // copy name to filename input
             document.getElementById('filename').value = filename.value;
             document.getElementById('fileType').value = fileType;
             sendPost.click() // presume file loaded is to be posted (i.e. it is not a list of commands)
@@ -56,8 +55,7 @@ connect.UI=function(div){
         if (sendPost.checked) {
             method="POST"
         }
-
-        let txt = sendContent.value === "" ? "status" : sendContent.value
+        let txt = sendContent.value
         var opts = {
             method:method,
             headers:{
@@ -65,11 +63,19 @@ connect.UI=function(div){
                 "Content-Type": "application/json"
             }
         }
-        let errorMessage = document.getElementById('error');
+        
         if(method=="POST"){
             const fileType = document.getElementById('fileType').value;
+            if(fileType !== 'csv' && fileType !== 'tsv' && fileType !== 'json') {
+                handleError('File type not supported!');
+                return;
+            }
             if(filename.value === "" || fileType.value === ""){
-                errorMessage.innerHTML = 'Please upload a file!';
+                handleError('Please upload a file!');
+                return;
+            }
+            if(txt === ""){
+                handleError('File is empty!');
                 return;
             }
             
@@ -80,7 +86,7 @@ connect.UI=function(div){
             })
             txt="submit"
         }
-        errorMessage.innerHTML = '';
+        handleError('');
         fetch(connect.api+"/"+txt,opts).then(resp=>{
             resp.json().then(y=>{
                 responded.value=JSON.stringify(y,null,3)
@@ -90,5 +96,9 @@ connect.UI=function(div){
     }    
 }
 
+handleError = (err) => {
+    let errorMessage = document.getElementById('error');
+    errorMessage.innerHTML = err;
+}
 // ini
 window.onload=connect
