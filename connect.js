@@ -10,13 +10,6 @@ connect=function(){
 connect.api= location.origin.match('localhost') ? "http://localhost:3000" : "https://episphere-connect.herokuapp.com"
 
 connect.UI=function(div){
-    let h = '<h3>API status: <span id="apistatus" style="color:red;font-size:small">not connected</span></h3>'
-    h += '<button id="doSend">Send</button> <span style="font-size:small">GET<input type="radio" name="HTTPVerb" id="sendGet" checked=true>(retrieve) | POST<input type="radio" name="HTTPVerb" id="sendPost">(submit)<br/><br/>Key: <input type="password" id="callKey"> <span id="ifPost" hidden=true>| Filename <input id="filename"> | Type <select id="type"><option value="csv">csv</option><option value="tsv">tsv</option><option value="json">json</option></select></span></span><br/><br/>'
-    h += '<textarea id="sendContent"></textarea>'
-    h += '<br><input type="file" id="loadFile">'
-    h += '<p style="color:green">Responded:</p>'
-    h += '<textarea id="responded"></textarea>'
-    div.innerHTML=h
     // show/hide POST options
     sendPost.onclick=function(){
         ifPost.hidden=false
@@ -39,7 +32,11 @@ connect.UI=function(div){
         var files=evt.target.files
         if(files.length>0){
             let file=files[0]
+            let fileType = file.name.slice(file.name.lastIndexOf('.')+1, file.name.length);
             filename.value=file.name // copy name to filename input
+            filename.type=fileType // copy name to filename input
+            document.getElementById('filename').value = filename.value;
+            document.getElementById('fileType').value = fileType;
             sendPost.click() // presume file loaded is to be posted (i.e. it is not a list of commands)
             var reader = new FileReader()
             reader.onload = function() {
@@ -69,10 +66,19 @@ connect.UI=function(div){
             }
         }
         if(method=="POST"){
+            const fileType = document.getElementById('fileType').value;
+            let errorMessage = document.getElementById('error');
+            if(filename.value === "" || fileType.value === ""){
+                errorMessage.innerHTML = 'Please upload a file!';
+                return;
+            }else {
+                errorMessage.innerHTML = '';
+            }
+            
             opts.body=JSON.stringify({
                 data: txt,
                 filename: filename.value,
-                type: type.value
+                type: fileType
             })
             txt="submit"
         }
