@@ -55,7 +55,7 @@ connect.UI=function(div){
         if (sendPost.checked) {
             method="POST"
         }
-        let txt = sendContent.value
+        let txt = sendContent.value !== "" ? sendContent.value : 'status';
         var opts = {
             method:method,
             headers:{
