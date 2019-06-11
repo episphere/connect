@@ -55,7 +55,7 @@ const parseData = async (key, type, data) => {
         parsedData = await parser(data, { 'separator': '\t' })
     
     else if (type === 'json')
-        parsedData = data
+        parsedData = JSON.parse(data)
         
     else
         return new Error('Type mismatch')

@@ -55,7 +55,7 @@ const generateCaseIDs = (key, parsedData) => {
 		"updated": [],
 		"all": []
 	}
-    
+	
     const submissionData = parsedData.map((record, idx) => {
 		const connectIdField = "Connect_ID"
 		
