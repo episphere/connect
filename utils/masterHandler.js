@@ -89,6 +89,7 @@ const getSubmissions = (ctx, key, lean) => {
 					filename: submission.filename,
 					submissionTimestamp: submission.submissionTimestamp,
 					version: submission.version,
+					submissionFileName: submission.siteFilename
 			} : submission
 		})
 
