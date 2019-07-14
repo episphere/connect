@@ -103,7 +103,7 @@ const getSingleSubmission = (ctx, key, submissionId, version) => {
 }
 
 const getCaseInSubmission = (submissionData, caseId) => {
-    const requiredCase = submissionData.find(record => (record["Connect_ID"] === caseId || record["Site_Subject_ID"] === caseId))
+    const requiredCase = submissionData.find(record => (record["connectCaseId"] === caseId || record["Site_Subject_ID"] === caseId))
     if (!requiredCase) {
         return new Error(`Record corresponding to ID ${caseId} not found!`)
     }

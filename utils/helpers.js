@@ -57,7 +57,7 @@ const generateCaseIDs = (key, parsedData) => {
 	}
 
     const submissionData = parsedData.map((record, idx) => {
-		const connectIdField = "Connect_ID"
+		const connectIdField = "connectCaseId"
 		
 		let siteIdToConnectIdMapping = {}
 		if (record[connectIdField] && isValidCaseId(key, record[connectIdField])) {

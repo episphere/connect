@@ -55,16 +55,16 @@ const updateMaster = (ctx, key, newSubmission, caseIDMap) => {
 	}
 	
 	caseIDMap['new'].forEach(caseToSiteMapping => {
-		const { caseId } = caseToSiteMapping
-		masterFile[key].cases[caseId] = {
+		const { connectCaseId } = caseToSiteMapping
+		masterFile[key].cases[connectCaseId] = {
 			'1': caseToSubmissionMap
 		}
 	})
 	
 	caseIDMap['updated'].forEach(caseToSiteMapping => {
-		const { caseId } = caseToSiteMapping
-		const latestVersionOfCase = Math.max(Object.keys(masterFile[key].cases[caseId])) + 1
-		masterFile[key].cases[caseId][latestVersionOfCase] = caseToSubmissionMap
+		const { connectCaseId } = caseToSiteMapping
+		const latestVersionOfCase = Math.max(Object.keys(masterFile[key].cases[connectCaseId])) + 1
+		masterFile[key].cases[connectCaseId][latestVersionOfCase] = caseToSubmissionMap
 	})
 
 	const totalRecords = Object.keys(masterFile[key].cases).length
