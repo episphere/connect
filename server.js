@@ -20,7 +20,7 @@ async function validateKey(ctx, next) {
         ctx.body = getResponseBody('Authorization failed!', 401)
         return;
     }
-    ctx.state.key = ctx.request.headers['authorization'].split('Bearer ')[1]
+    ctx.state.key = ctx.request.headers['authorization'].replace('Bearer','').trim();
     const {filename, type } = ctx.request.body
 
     const validKey = await isAPIKeyValid(ctx.state.key)

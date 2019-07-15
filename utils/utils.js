@@ -1,21 +1,16 @@
 const fs = require('fs')
 const parser = require('neat-csv')
 
-const { getSubmissions } = require(`${__dirname}/masterHandler.js`)
-const { getValidKeys, getVersion, generateCaseIDs } = require(`${__dirname}/helpers.js`)
+const { getSubmissions } = require(`./masterHandler`)
+const { getVersion, generateCaseIDs } = require(`./helpers`)
+const { validateApiKey } = require('./firestore')
 
 const isAPIKeyValid = async (key) => {
     /* Return if the API key in the request is a valid one. */
     if (!key) {
         return false
     }
-    
-    let isValid = false
-    
-    const createdKeys = await getValidKeys()
-    if (createdKeys.includes(key)) {
-        isValid = true
-    }
+    const isValid = validateApiKey(key);
     
     return isValid
 }

@@ -1,6 +1,8 @@
 const fs = require('fs')
 const uuid = require('uuid/v4')
 const csv = require('neat-csv')
+const { storeFile } = require('../utils/storage')
+const { addNewSubmissions } = require('../utils/firestore')
 
 const { isSubmissionValid, parseData } = require(`${__dirname}/../utils/utils`)
 const { getResponseBody } = require(`${__dirname}/../utils/helpers`)
@@ -38,23 +40,6 @@ module.exports.createSubmission =  async (ctx) => {
     
     const submissionId = uuid()
     const submissionTimestamp = (new Date).getTime()
-    const submissionFilePath = `${filesLocation}/${key}/${submissionId}_${submissionTimestamp}_${filename}`
-
-    const writeSubmission = (version) => {
-        fs.writeFileSync(submissionFilePath, JSON.stringify(submissionData))
-        const newSubmission = {
-            'id': submissionId,
-            'location': submissionFilePath,
-            'siteFilename': filename,
-            'caseIDs': all,
-            submissionTimestamp,
-            version,
-            type
-        }
-
-        const totalNum = updateMaster(ctx, key, newSubmission, caseIDMap)
-        return totalNum
-    }
     
     const latestVersion = getLastSubmission(ctx, key, filename)
 
@@ -63,20 +48,34 @@ module.exports.createSubmission =  async (ctx) => {
     if(latestVersion === 0) {
         // File being submitted for the first time. Write directly to disk.
         version = 1
-        var { totalSubmissions, totalRecords } = writeSubmission(version)
     } else {
         // CODE TO UPDATE SUBMISSION HERE!!! Overwrite with new version number for now.
         version = latestVersion + 1
-        var { totalSubmissions, totalRecords } = writeSubmission(version)
     }
+    const newSubmission = {
+        apiKey: `${ctx.req.headers.authorization.replace('Bearer', '').trim()}`,
+        submissionId,
+        siteFilename: filename,
+        caseMappings: all,
+        submissionTimestamp,
+        version,
+        siteFileType: type,
+        userId: ''
+    }
+
+    const caseIds = {
+        connectCaseIds: all.map(data => data.connectCaseId),
+        submissionId: submissionId 
+    }
+    addNewSubmissions(newSubmission, caseIds);
+    
+    storeFile(`${submissionId}_${submissionTimestamp}_${filename}`, JSON.stringify(submissionData));
     
     ctx.status = 200
     ctx.body = {
         'message': 'Upload Successful',
         'submissionId': submissionId,
         submissionTimestamp,
-        totalSubmissions,
-        totalRecords,
         'caseIds': {
             'casesInSubmission': all.length,
             ...caseIDMap
