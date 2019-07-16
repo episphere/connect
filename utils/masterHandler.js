@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { parse } = require('json2csv')
+const { retrieveSubmissions, retrievePreviousSubmission } = require('./firestore')
 
 const filesLocation = `${__dirname}/../files`
 const masterFileLocation = `${filesLocation}/dir.json`
@@ -23,19 +24,19 @@ const isDirectoryPresent = (ctx, key) => {
 	return isPresent
 }
 
-const getLastSubmission = (ctx, key, filename) => {
+const getLastSubmission = async (ctx, key, filename) => {
 		/* Check if there is already a file with the same name as the submitted file, 
 		 * so that it can be understood if this submission is an update. Return the latest
 		 * version number of the submission if it a file with the same name was previously 
 		 * submitted. */
 		
-	const { masterFile } = ctx.state
-	const previousSubmissions = masterFile[key].submissions.filter(record => record.siteFilename.includes(filename))
+	
+	const previousSubmissions = await retrievePreviousSubmission(key, filename)
 	
 	if (previousSubmissions.length === 0){
 		return 0
 	} else {
-		const latestVersion = previousSubmissions.reduce((max, record) => record.version > max ? record.version : max, 0)
+		const latestVersion = previousSubmissions.reduce((max, record) => record.data().version > max ? record.data().version : max, 0)
 		return latestVersion
 	}
 
@@ -78,25 +79,14 @@ const updateMaster = (ctx, key, newSubmission, caseIDMap) => {
 	}
 }
 
-const getSubmissions = (ctx, key, lean) => {
-	const { masterFile } = ctx.state
-	
-	if (key in masterFile) {
-			
-		const submissions = masterFile[key].submissions.map((submission) => { 
-			return lean ? {
-					id: submission.id,
-					filename: submission.filename,
-					submissionTimestamp: submission.submissionTimestamp,
-					version: submission.version,
-					submissionFileName: submission.siteFilename
-			} : submission
-		})
-
+const getSubmissions = async (key) => {
+	if (key) {
+		const data = await retrieveSubmissions(key);
+		
 		return {
-			submissions,
-			totalSubmissions: submissions.length,
-			totalRecords: Object.keys(masterFile[key].cases).length
+			submissions: data,
+			totalSubmissions: data.length,
+			totalRecords: data.reduce((acc, result) => result.totalCases + acc, 0)
 		}
 	
 	} else {

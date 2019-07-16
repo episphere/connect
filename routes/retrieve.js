@@ -1,12 +1,12 @@
 const fs = require('fs')
-const { getSubmissions, getCases } = require(`${__dirname}/../utils/masterHandler`)
-const { getSingleSubmission, getCaseInSubmission } = require(`${__dirname}/../utils/utils.js`)
-const { changeFormat } = require(`${__dirname}/../utils/helpers.js`)
+const { getSubmissions, getCases } = require(`./../utils/masterHandler`)
+const { getSingleSubmission, getCaseInSubmission } = require(`./../utils/utils.js`)
+const { changeFormat } = require(`./../utils/helpers.js`)
 
-const retrieveFiles = (ctx) => {
+const retrieveFiles = async (ctx) => {
     // Return a (paginated?) list of all submissions corresponding to that API key.
     const { key } = ctx.state
-    const { submissions, totalSubmissions, totalRecords } = getSubmissions(ctx, key, true)
+    const { submissions, totalSubmissions, totalRecords } = await getSubmissions(key)
     if (submissions instanceof Error) {
         ctx.status = 400
         ctx.body = submissions.message

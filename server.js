@@ -48,11 +48,11 @@ async function validateKey(ctx, next) {
  * only once and stores it in ctx.
  *********************************************/ 
 
-app.use(async (ctx, next) => {
-    const masterFileLocation = `${__dirname}/files/dir.json`
-    ctx.state.masterFile = JSON.parse(fs.readFileSync(masterFileLocation))
-    await next()
-})
+// app.use(async (ctx, next) => {
+//     const masterFileLocation = `${__dirname}/files/dir.json`
+//     ctx.state.masterFile = JSON.parse(fs.readFileSync(masterFileLocation))
+//     await next()
+// })
 app.use(bodyparser({
     multipart: true,
     jsonLimit: '20mb'

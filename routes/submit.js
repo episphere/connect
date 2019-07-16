@@ -4,9 +4,9 @@ const csv = require('neat-csv')
 const { storeFile } = require('../utils/storage')
 const { addNewSubmissions } = require('../utils/firestore')
 
-const { isSubmissionValid, parseData } = require(`${__dirname}/../utils/utils`)
-const { getResponseBody } = require(`${__dirname}/../utils/helpers`)
-const { isDirectoryPresent, getLastSubmission, updateMaster } = require(`${__dirname}/../utils/masterHandler`)
+const { isSubmissionValid, parseData } = require(`./../utils/utils`)
+const { getResponseBody } = require(`./../utils/helpers`)
+const { getLastSubmission, updateMaster } = require(`./../utils/masterHandler`)
 
 const filesLocation = `${__dirname}/../files`
 
@@ -15,12 +15,6 @@ module.exports.createSubmission =  async (ctx) => {
     /* Create a submission for the data sent across by the site. */
     const { key } = ctx.state
     const { filename, type, data } = ctx.request.body
-
-    if (!isDirectoryPresent(ctx, key)) {
-        ctx.status = 400
-        ctx.body = getResponseBody('API Key Not Found in Storage!', 400)
-        return
-    }
     
     if (!isSubmissionValid(data)) {
         ctx.status = 400
@@ -41,7 +35,7 @@ module.exports.createSubmission =  async (ctx) => {
     const submissionId = uuid()
     const submissionTimestamp = (new Date).getTime()
     
-    const latestVersion = getLastSubmission(ctx, key, filename)
+    const latestVersion = await getLastSubmission(ctx, key, filename)
 
     let version = 0
     
