@@ -65,7 +65,7 @@ const getSingleSubmission = async (key, submissionId, version) => {
 		
     const submission = await getSubmissionById(key, submissionId)
 	if (submission instanceof Error) {
-		return submission
+		return { submission }
     } 
     else {
         if(version){

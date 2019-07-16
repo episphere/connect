@@ -35,7 +35,7 @@ const retrieveFile = async (ctx) => {
         return
     }
 
-    if (caseId) {
+    if (caseId  && data) {
         data = getCaseInSubmission(data, caseId)
         if (data instanceof Error) {
             ctx.status = 400
