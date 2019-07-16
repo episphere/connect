@@ -6,3 +6,6 @@ boxcredentials.json
 .DS_Store
 *.csv
 #*.sh
+app.yaml
+.gcloudignore
+nih-nci-dceg-episphere-dev-70e8e321d62d.json
