@@ -79,7 +79,7 @@ const getSingleSubmission = async (key, submissionId, version) => {
         
 		return {
             submission,
-            data: submissionData
+            submissionData
 		}
 	}
 }

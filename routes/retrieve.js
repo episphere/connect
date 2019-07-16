@@ -27,8 +27,8 @@ const retrieveFile = async (ctx) => {
     const { version, format } = ctx.request.query
     const { submissionId, caseId } = ctx.params
     
-    const { submission, data } = await getSingleSubmission(key, submissionId, parseInt(version))
-    
+    const { submission, submissionData } = await getSingleSubmission(key, submissionId, parseInt(version))
+    let data = submissionData;
     if (submission instanceof Error) {
         ctx.status = 400
         ctx.body = submission.message
