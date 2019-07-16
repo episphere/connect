@@ -61,7 +61,7 @@ const retrieveSubmissions = async (key) => {
 
 const retrievePreviousSubmission = async (key, fileName) => {
     try{
-        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('siteFilename', '==', fileName)
+        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('siteFileName', '==', fileName)
         const response = await submissionsRef.get();
         const documents = response.docs;
         if(documents && documents !== 0){

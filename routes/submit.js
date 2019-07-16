@@ -49,7 +49,7 @@ module.exports.createSubmission =  async (ctx) => {
     const newSubmission = {
         apiKey: `${ctx.req.headers.authorization.replace('Bearer', '').trim()}`,
         submissionId,
-        siteFilename: filename,
+        siteFileName: filename,
         caseMappings: all,
         submissionTimestamp,
         version,
