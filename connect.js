@@ -7,7 +7,7 @@ connect=function(){
     if(div){connect.UI(div)}
 }
 
-connect.api= location.origin.match('localhost') ? "http://localhost:3000" : "https://episphere-connect.herokuapp.com"
+connect.api= location.origin.match('localhost') ? "http://localhost:3000" : "https://nih-nci-dceg-episphere-dev.appspot.com"
 
 connect.UI=function(div){
     // show/hide POST options
