@@ -78,7 +78,7 @@ const retrieveCase = (ctx) => {
         const version = caseVersion || Math.max(...Object.keys(caseVersions).map(Number))
         const { submissionId, timestamp } = caseVersions[version]
         
-        const { totalRecords, totalSubmissions, ...submission } = getSingleSubmission(ctx, key, submissionId)
+        const { totalRecords, totalSubmissions, ...submission } = getSingleSubmission(key, submissionId)
         if (submission instanceof Error) {
             ctx.status = 404
             ctx.body = submission.message
