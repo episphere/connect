@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { parse } = require('json2csv')
-const { retrieveSubmissions, retrievePreviousSubmission } = require('./firestore')
+const { retrieveSubmissions, retrievePreviousSubmission, retrieveSubmissionById } = require('./firestore')
 
 const filesLocation = `${__dirname}/../files`
 const masterFileLocation = `${filesLocation}/dir.json`
@@ -82,13 +82,27 @@ const updateMaster = (ctx, key, newSubmission, caseIDMap) => {
 const getSubmissions = async (key) => {
 	if (key) {
 		const data = await retrieveSubmissions(key);
-		
+		if (data instanceof Error) {
+			return data;
+		}
 		return {
 			submissions: data,
 			totalSubmissions: data.length,
 			totalRecords: data.reduce((acc, result) => result.totalCases + acc, 0)
 		}
 	
+	} else {
+		return new Error('Key not found')
+	}
+}
+
+const getSubmissionById = async (key, submissionId) => {
+	if (key) {
+		const data = await retrieveSubmissionById(key, submissionId);
+		if (data instanceof Error) {
+			return data;
+		}
+		return data;
 	} else {
 		return new Error('Key not found')
 	}
@@ -117,6 +131,7 @@ module.exports = {
 	getLastSubmission,
 	updateMaster,
 	getSubmissions,
+	getSubmissionById,
 	getCases,
 	isValidCaseId
 }

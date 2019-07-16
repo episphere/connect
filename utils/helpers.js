@@ -1,7 +1,7 @@
 const uuid = require('uuid/v4')
 const { parse } = require('json2csv')
 
-const { isValidCaseId } = require(`${__dirname}/masterHandler.js`)
+const { isValidCaseId } = require(`./masterHandler.js`)
 
 const changeFormat = (submissionData, format) => {
 	let formattedData = ''

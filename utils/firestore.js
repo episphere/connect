@@ -59,6 +59,30 @@ const retrieveSubmissions = async (key) => {
     }
 }
 
+const retrieveSubmissionById = async (key, submissionId) => {
+    try{
+        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('submissionId', '==', submissionId)
+        const response = await submissionsRef.get();
+        const documents = response.docs;
+        if(documents && documents.length !== 0){
+            for(let doc of documents){
+                let docData = doc.data();
+                docData.totalCases = docData.caseMappings.length;
+                delete docData.apiKey;
+                delete docData.caseMappings;
+                delete docData.userId;
+                return docData;
+            }
+        }
+        else {
+            return new Error(`Submission corresponding to ID ${submissionId} not found!`);
+        }
+    }
+    catch(error){
+        return new Error(error);
+    }
+}
+
 const retrievePreviousSubmission = async (key, fileName) => {
     try{
         const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('siteFileName', '==', fileName)
@@ -80,5 +104,6 @@ module.exports = {
     addNewSubmissions,
     validateApiKey,
     retrieveSubmissions,
+    retrieveSubmissionById,
     retrievePreviousSubmission
 }

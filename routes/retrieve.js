@@ -21,13 +21,13 @@ const retrieveFiles = async (ctx) => {
     return
 }
 
-const retrieveFile = (ctx) => {
+const retrieveFile = async (ctx) => {
     // Retrieve data based on the user's API Key, and depending on whether they passed in a submission ID, case ID or both.
     const { key } = ctx.state
     const { version, format } = ctx.request.query
     const { submissionId, caseId } = ctx.params
     
-    const { totalSubmissions, totalRecords, ...submission } = getSingleSubmission(ctx, key, submissionId, parseInt(version))
+    const { submission, data } = await getSingleSubmission(key, submissionId, parseInt(version))
     
     if (submission instanceof Error) {
         ctx.status = 400
@@ -35,7 +35,6 @@ const retrieveFile = (ctx) => {
         return
     }
 
-    let { data } = submission
     if (caseId) {
         data = getCaseInSubmission(data, caseId)
         if (data instanceof Error) {
@@ -48,13 +47,12 @@ const retrieveFile = (ctx) => {
     if (format && format !== 'json') {
         data = changeFormat(data, format)
     }
-
     ctx.status = 200
     ctx.body = {
-        submissionId: submission.id,
+        submissionId: submission.submissionId,
+        fileName: submission.siteFileName,
         submissionTimestamp: submission.submissionTimestamp,
-        totalSubmissions,
-        totalRecords,
+        casesInSubmission: submission.totalCases,
         result: data
     }
     return

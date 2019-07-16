@@ -16,6 +16,13 @@ const storeFile = async (fileName, data) => {
     }
 }
 
+const retrieveSubmissionData = async (fileName) => {
+    const myBucket = gcs.bucket(config.episphere_dev_gcs);
+    let file = await myBucket.file(fileName).download();
+    return JSON.parse(file[0].toString());
+}
+
 module.exports = {
-    storeFile
+    storeFile,
+    retrieveSubmissionData
 }

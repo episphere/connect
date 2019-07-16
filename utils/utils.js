@@ -1,9 +1,10 @@
 const fs = require('fs')
 const parser = require('neat-csv')
 
-const { getSubmissions } = require(`./masterHandler`)
+const { getSubmissionById } = require(`./masterHandler`)
 const { getVersion, generateCaseIDs } = require(`./helpers`)
 const { validateApiKey } = require('./firestore')
+const { retrieveSubmissionData } = require('./storage')
 
 const isAPIKeyValid = async (key) => {
     /* Return if the API key in the request is a valid one. */
@@ -60,38 +61,24 @@ const parseData = async (key, type, data) => {
     return submissionWithCaseIDs
 }
 
-const getSingleSubmission = (ctx, key, submissionId, version) => {
+const getSingleSubmission = async (key, submissionId, version) => {
 		
-	const { submissions, totalSubmissions, totalRecords } = getSubmissions(ctx, key, false)
-	if (submissions instanceof Error) {
-		return submissions
-    
-    } else {		
-		let submissionIds = submissions.filter(submission => submission.id === submissionId )
-
-		if (submissionIds.length === 0 ) {
-            // If ID doesn't match, check if any site filenames match.
-            submissionIds = submissions.filter(submission => submission.siteFilename === submissionId)
-		}
+    const submission = await getSubmissionById(key, submissionId)
+	if (submission instanceof Error) {
+		return submission
+    } 
+    else {
+        if(version){
+            const submissionWithVersion = getVersion(submissionIds, version)
+            if (submissionWithVersion instanceof Error) {
+                return submissionWithVersion
+            }
+        }
 		
-		if (submissionIds.length === 0) {
-            // Return Error if still no match in ID or filename
-            return new Error(`Submission corresponding to ID ${submissionId} not found!`)
-		}
-		
-		const submissionWithVersion = getVersion(submissionIds, version)
-		if (submissionWithVersion instanceof Error) {
-            return submissionWithVersion
-		}
-		
-		const submissionLocation = submissionWithVersion.location
-		let submissionData = JSON.parse(fs.readFileSync(submissionLocation))
-		
+        let submissionData = await retrieveSubmissionData(`${submission.submissionId}_${submission.submissionTimestamp}_${submission.siteFileName}`);
+        
 		return {
-            id: submissionWithVersion.id,
-            submissionTimestamp: submissionWithVersion.submissionTimestamp,
-            totalSubmissions,
-            totalRecords,
+            submission,
             data: submissionData
 		}
 	}
