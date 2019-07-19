@@ -6,9 +6,9 @@ const gcs = new Storage({
 });
 
 const storeFile = async (fileName, data) => {
-    const myBucket = gcs.bucket(config.episphere_dev_gcs);
-    const file = myBucket.file(fileName);
     try{
+        const myBucket = gcs.bucket(config.episphere_dev_gcs);
+        const file = myBucket.file(fileName);
         await file.save(data);
     }
     catch(error){

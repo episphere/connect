@@ -63,7 +63,12 @@ module.exports.createSubmission =  async (ctx) => {
     }
     addNewSubmissions(newSubmission, caseIds);
     
-    storeFile(`${submissionId}_${submissionTimestamp}_${filename}`, JSON.stringify(submissionData));
+    const uploadFile = storeFile(`${submissionId}_${submissionTimestamp}_${filename}`, JSON.stringify(submissionData));
+    if(uploadFile instanceof Error){
+        ctx.status = 400
+        ctx.body = uploadFile.message
+        return
+    }
     
     ctx.status = 200
     ctx.body = {
