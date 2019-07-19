@@ -35,7 +35,7 @@ const validateApiKey = async (key) => {
 
 const retrieveSubmissions = async (key) => {
     try{
-        const submissionsRef = db.collection('submissions').where('apiKey', '==', key)
+        const submissionsRef = db.collection('submissions').where('apiKey', '==', key);
         const response = await submissionsRef.get();
         const documents = response.docs;
         if(documents && documents.length !== 0){
@@ -61,7 +61,7 @@ const retrieveSubmissions = async (key) => {
 
 const retrieveSubmissionById = async (key, submissionId) => {
     try{
-        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('submissionId', '==', submissionId)
+        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('submissionId', '==', submissionId);
         const response = await submissionsRef.get();
         const documents = response.docs;
         if(documents && documents.length !== 0){
@@ -85,7 +85,7 @@ const retrieveSubmissionById = async (key, submissionId) => {
 
 const retrievePreviousSubmission = async (key, fileName) => {
     try{
-        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('siteFileName', '==', fileName)
+        const submissionsRef = db.collection('submissions').where('apiKey', '==', key).where('siteFileName', '==', fileName);
         const response = await submissionsRef.get();
         const documents = response.docs;
         if(documents && documents !== 0){
@@ -96,7 +96,28 @@ const retrievePreviousSubmission = async (key, fileName) => {
         }
     }
     catch(error){
-        return new Error;
+        return new Error(error);
+    }
+}
+
+const submissionByCaseId = async (key, caseId) => {
+    try{
+        const casesRef = db.collection('cases').where('connectCaseIds', 'array-contains', caseId);
+        const response = await casesRef.get();
+        const documents = response.docs;
+        if(documents && documents !== 0){
+            for(let doc of documents){
+                const submissionId = doc.data().submissionId;
+                const data = await retrieveSubmissionById(key, submissionId)
+                return data;
+            }
+        }
+        else if(documents){
+            return new Error(`Case corresponding to ID ${caseId} not found!`);
+        }
+    }
+	catch(error){
+        return new Error(error)
     }
 }
 
@@ -105,5 +126,6 @@ module.exports = {
     validateApiKey,
     retrieveSubmissions,
     retrieveSubmissionById,
-    retrievePreviousSubmission
+    retrievePreviousSubmission,
+    submissionByCaseId
 }

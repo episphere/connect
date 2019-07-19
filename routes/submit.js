@@ -59,7 +59,7 @@ module.exports.createSubmission =  async (ctx) => {
 
     const caseIds = {
         connectCaseIds: all.map(data => data.connectCaseId),
-        submissionId: submissionId 
+        submissionId: submissionId,
     }
     addNewSubmissions(newSubmission, caseIds);
     

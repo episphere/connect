@@ -108,15 +108,6 @@ const getSubmissionById = async (key, submissionId) => {
 	}
 }
 
-const getCases = (ctx, key) => {
-	const { masterFile } = ctx.state
-	if (key in masterFile) {
-		return masterFile[key].cases
-	} else {
-		return new Error('Key not found')
-	}
-}
-
 const isValidCaseId = (ctx, key, caseId) => {
 	const { masterFile } = ctx.state
 	
@@ -132,6 +123,5 @@ module.exports = {
 	updateMaster,
 	getSubmissions,
 	getSubmissionById,
-	getCases,
 	isValidCaseId
 }

@@ -12,14 +12,19 @@ const storeFile = async (fileName, data) => {
         await file.save(data);
     }
     catch(error){
-        console.error(error);
+        return new Error(error)
     }
 }
 
 const retrieveSubmissionData = async (fileName) => {
-    const myBucket = gcs.bucket(config.episphere_dev_gcs);
-    let file = await myBucket.file(fileName).download();
-    return JSON.parse(file[0].toString());
+    try{
+        const myBucket = gcs.bucket(config.episphere_dev_gcs);
+        let file = await myBucket.file(fileName).download();
+        return JSON.parse(file[0].toString());
+    }catch(error){
+        return new Error(error)
+    }
+    
 }
 
 module.exports = {
