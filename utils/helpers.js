@@ -94,7 +94,8 @@ const validateKey = async (ctx, next) => {
 	
 	if (!key || key === "") {
         ctx.status = 401
-        ctx.body = getResponseBody('Invalid API Key!', 401)
+		ctx.body = getResponseBody('Invalid API Key!', 401)
+		return;
 	}
 	
 	const validKey = await validateApiKey(key);
@@ -102,7 +103,8 @@ const validateKey = async (ctx, next) => {
 
     if (!validKey) {
         ctx.status = 401
-        ctx.body = getResponseBody('Invalid API Key!', 401)
+		ctx.body = getResponseBody('Invalid API Key!', 401)
+		return;
     } 
     // else if (!validFilename) {
     //     ctx.status = 400
