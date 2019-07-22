@@ -3,18 +3,7 @@ const parser = require('neat-csv')
 
 const { getSubmissionById } = require(`./masterHandler`)
 const { getVersion, generateCaseIDs } = require(`./helpers`)
-const { validateApiKey } = require('./firestore')
 const { retrieveSubmissionData } = require('./storage')
-
-const isAPIKeyValid = async (key) => {
-    /* Return if the API key in the request is a valid one. */
-    if (!key) {
-        return false
-    }
-    const isValid = validateApiKey(key);
-    
-    return isValid
-}
 
 const isFileValid = (filename, type) => {
     /* TODO: Check if the filename is okay and if the type is specified. */
@@ -93,7 +82,6 @@ const getCaseInSubmission = (submissionData, caseId) => {
 }
 
 module.exports = {
-    isAPIKeyValid,
     isFileValid,
     isSubmissionValid,
     parseData,

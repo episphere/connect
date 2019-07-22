@@ -8,36 +8,12 @@ const fs = require('fs')
 const { helpHandler } = require('./routes/help')
 const { retrieveFiles, retrieveFile, retrieveCase } = require('./routes/retrieve')
 const { createSubmission } = require('./routes/submit')
-const { getResponseBody } = require('./utils/helpers')
-const { isAPIKeyValid, isFileValid } = require('./utils/utils')
+const { getResponseBody, validateKey } = require('./utils/helpers')
+const { isFileValid } = require('./utils/utils')
 
 const app = new Koa()
 const router = new Router()
 
-async function validateKey(ctx, next) {
-    if(ctx.request.headers['authorization'] === undefined){
-        ctx.status = 401
-        ctx.body = getResponseBody('Authorization failed!', 401)
-        return;
-    }
-    ctx.state.key = ctx.request.headers['authorization'].replace('Bearer','').trim();
-    const {filename, type } = ctx.request.body
-
-    const validKey = await isAPIKeyValid(ctx.state.key)
-    // const validFilename = await isFileValid(filename ,type)
-
-    if (!validKey) {
-        ctx.status = 401
-        ctx.body = getResponseBody('Invalid API Key!', 401)
-    } 
-    // else if (!validFilename) {
-    //     ctx.status = 400
-    //     ctx.body = 'Bad filename'
-    // } 
-    else {
-        await next()
-    }
-}
 // app.use(async (ctx, next) => {
 //     ctx.req.on('data', (data)  => console.log(data.toString('utf-8')))
 //     ctx.req.on('end', ()=> next())

@@ -2,6 +2,7 @@ const uuid = require('uuid/v4')
 const { parse } = require('json2csv')
 
 const { isValidCaseId } = require(`./masterHandler.js`)
+const { validateApiKey } = require('./firestore')
 
 const changeFormat = (submissionData, format) => {
 	let formattedData = ''
@@ -81,6 +82,37 @@ const generateCaseIDs = (key, parsedData) => {
     }
 }
 
+const validateKey = async (ctx, next) => {
+    if(ctx.request.headers['authorization'] === undefined){
+        ctx.status = 401
+        ctx.body = getResponseBody('Authorization failed!', 401)
+        return;
+    }
+    ctx.state.key = ctx.request.headers['authorization'].replace('Bearer','').trim();
+    const {filename, type } = ctx.request.body
+	const { key } = ctx.state
+	
+	if (!key || key === "") {
+        ctx.status = 401
+        ctx.body = getResponseBody('Invalid API Key!', 401)
+	}
+	
+	const validKey = await validateApiKey(key);
+    // const validFilename = await isFileValid(filename ,type)
+
+    if (!validKey) {
+        ctx.status = 401
+        ctx.body = getResponseBody('Invalid API Key!', 401)
+    } 
+    // else if (!validFilename) {
+    //     ctx.status = 400
+    //     ctx.body = 'Bad filename'
+    // } 
+    else {
+        await next()
+    }
+}
+
 const getResponseBody = (message, code) => {
 
 	return {
@@ -93,5 +125,6 @@ module.exports = {
     changeFormat,
     getVersion,
 	generateCaseIDs,
-	getResponseBody
+	getResponseBody,
+	validateKey
 }
