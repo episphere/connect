@@ -1,4 +1,4 @@
-## in this folder
+## In this [folder](https://github.com/episphere/connect/tree/master/docs/test)
 
 Testing native viewing of documents in different formats.
 
