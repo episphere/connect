@@ -1,0 +1,100 @@
+{
+  "PRIMARY": [
+    {
+      "id": "conceptId",
+      "label": "Concept ID",
+      "required": true,
+      "type": "concept"
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "required": true,
+      "type": "text"
+    }
+  ],
+  "SECONDARY": [
+    {
+      "id": "conceptId",
+      "label": "Concept ID",
+      "required": true,
+      "type": "concept"
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "id": "primaryConceptId",
+      "label": "Primary Concept ID",
+      "required": true,
+      "type": "reference",
+      "referencesType": "PRIMARY"
+    }
+  ],
+  "SOURCE": [
+    {
+      "id": "conceptId",
+      "label": "Concept ID",
+      "required": true,
+      "type": "concept"
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "required": true,
+      "type": "text"
+    }
+  ],
+  "QUESTION": [
+    {
+      "id": "conceptId",
+      "label": "Concept ID",
+      "required": true,
+      "type": "concept"
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "id": "secondaryConceptId",
+      "label": "Secondary Concept ID",
+      "required": true,
+      "type": "reference",
+      "referencesType": "SECONDARY"
+    },
+    {
+      "id": "sourceConceptId",
+      "label": "Source Concept ID",
+      "required": false,
+      "type": "reference",
+      "referencesType": "SOURCE"
+    },
+    {
+      "id": "responses",
+      "label": "Responses",
+      "required": false,
+      "type": "reference",
+      "referencesType": "RESPONSE"
+    }
+  ],
+  "RESPONSE": [
+    {
+      "id": "conceptId",
+      "label": "Concept ID",
+      "required": true,
+      "type": "concept"
+    },
+    {
+      "id": "key",
+      "label": "Key",
+      "required": true,
+      "type": "text"
+    }
+  ]
+}
